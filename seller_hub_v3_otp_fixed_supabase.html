@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#7dd3fc">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Balcony – Seller Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Fraunces:ital,opsz,wght@1,9..144,600&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yellow: #7dd3fc;
+  --yellow-strong: #38bdf8;
+  --yellow-light: #f0f9ff;
+  --green: #0b7a1b;
+  --green-dark: #085e15;
+  --green-light: #e8f6ea;
+  --red: #d92d20;
+  --red-light: #fef0ef;
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1b1a19;
+  --muted: #6f6b66;
+  --muted-2: #9b9690;
+  --line: #e8e3d9;
+  --line-strong: #d8d2c5;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --shadow: 0 6px 24px rgba(43, 33, 0, 0.07), 0 1px 3px rgba(0,0,0,.04);
+  --shadow-sm: 0 2px 10px rgba(43,33,0,.06);
+  --app-max: 480px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background:#e8e4da;
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+
+/* App shell */
+.app-shell{
+  min-height:100dvh;
+  max-width:var(--app-max);
+  margin:0 auto;
+  background: var(--bg);
+  position:relative;
+  box-shadow: 0 0 80px rgba(0,0,0,.08);
+  overflow-x:hidden;
+}
+
+/* Auth */
+#auth-view{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  overflow:auto;
+  min-height:100dvh;
+  background: #7dd3fc;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='white' fill-opacity='0.22' d='M0,160 C320,240 640,80 960,160 C1200,224 1320,192 1440,160 L1440,320 L0,320 Z'/%3E%3C/svg%3E"), radial-gradient(circle at 80% 10%, rgba(255,255,255,.55) 0, transparent 40%);
+  background-repeat: no-repeat, no-repeat;
+  background-position: bottom center, center;
+  background-size: 100% 180px, auto;
+  display:flex;
+  flex-direction:column;
+}
+#auth-view[hidden]{ display:none !important; }
+.auth-top{
+  padding: 56px 28px 30px;
+}
+.balcony-mark{
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight:700;
+  font-size: 44px;
+  line-height:.98;
+  letter-spacing:-.02em;
+}
+.balcony-mark em{
+  font-style:italic;
+  font-weight:600;
+}
+.balcony-sub{
+  margin-top:8px;
+  font-size:14.5px;
+  color:#312805;
+  font-weight:600;
+}
+.auth-card-wrap{
+  flex:1;
+  padding: 0 14px 28px;
+}
+.auth-card{
+  background:var(--card);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 26px 22px 24px;
+}
+.auth-title{
+  font-family:'Fraunces', Georgia, serif;
+  font-size: 28px;
+  letter-spacing:-.01em;
+  margin-bottom:6px;
+}
+.auth-hint{
+  font-size:13.7px;
+  color:var(--muted);
+  line-height:1.55;
+  margin-bottom:18px;
+}
+.field-label{
+  font-size:12.5px;
+  font-weight:700;
+  color:#3a352d;
+  margin-bottom:6px;
+  display:block;
+}
+.input, .select, .textarea{
+  width:100%;
+  background:#f8f5ee;
+  border:1.6px solid var(--line);
+  border-radius: 14px;
+  padding: 13.5px 14px;
+  font-size:15px;
+  outline:none;
+  transition: .15s border-color, .15s background;
+}
+.input:focus, .select:focus, .textarea:focus{
+  border-color: #d6c6a0;
+  background:#fff;
+  box-shadow: 0 0 0 3px rgba(249,214,72,.35);
+}
+.input::placeholder{color:#b3aea6}
+.phone-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#f8f5ee;
+  border:1.6px solid var(--line);
+  border-radius:14px;
+  padding-left:14px;
+}
+.phone-row span{font-weight:700; color:#4b453b; font-size:15px}
+.phone-row input{
+  border:none;background:transparent;flex:1;padding:13.5px 14px 13.5px 4px;outline:none;
+}
+.btn-primary{
+  width:100%;
+  background:var(--ink);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  padding:15px 18px;
+  font-weight:700;
+  font-size:15.5px;
+  transition:.15s transform, .15s opacity;
+}
+.btn-primary:active{transform:scale(.99)}
+.btn-yellow{
+  background:var(--yellow);
+  color:#221b03;
+}
+.btn-ghost{
+  background:transparent;
+  border:none;
+  color:#433c30;
+  font-weight:700;
+  font-size:13.8px;
+  padding:8px;
+}
+.otp-boxes{
+  display:flex; gap:10px; justify-content: space-between; margin:10px 0 6px;
+}
+.otp-boxes input{
+  width:56px; height:56px; text-align:center; font-size:22px; font-weight:700;
+  border-radius:14px; border:1.7px solid var(--line); background:#f8f5ee;
+  outline:none;
+}
+.otp-boxes input:focus{ border-color:#d6c6a0; box-shadow: 0 0 0 3px rgba(249,214,72,.35); background:#fff;}
+.muted-sm{font-size:12.7px; color:var(--muted);}
+.auth-footnote{
+  text-align:center;
+  font-size:12px;
+  color:#5b4d1a;
+  padding:16px 18px 10px;
+}
+.link-strong{font-weight:800; text-decoration:underline; cursor:pointer;}
+
+/* Register */
+.reg-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.reg-grid .full{grid-column:1 / -1}
+.photo-uploader{
+  border:2px dashed #d8cfba;
+  background:#faf7f0;
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+  cursor:pointer;
+  position:relative;
+}
+.photo-uploader.has-img{padding:0; border-style:solid; overflow:hidden;}
+.photo-uploader img{width:100%; height:140px; object-fit:cover; border-radius:14px;}
+.uploader-hint{font-size:12.8px; color:var(--muted); font-weight:600}
+.uploader-hint b{color:#332d24}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+
+/* Main app */
+#main-view{min-height:100dvh; display:flex; flex-direction:column;}
+.app-header{
+  background: var(--yellow);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath fill='white' fill-opacity='0.25' d='M0,64 C240,96 480,32 720,56 C960,80 1200,112 1440,72 L1440,120 L0,120 Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: 100% 28px;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 18px 26px;
+  position:sticky; top:0; z-index:40;
+  border-bottom-left-radius:22px; border-bottom-right-radius:22px;
+}
+.header-row{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.shop-identity{display:flex; align-items:center; gap:12px; min-width:0}
+.shop-avatar{
+  width:48px; height:48px; border-radius:15px; background:#ffffff;
+  border:2px solid rgba(255,255,255,.6);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fraunces', Georgia, serif; font-weight:700; font-size:18px;
+  color:#0284c7; flex-shrink:0;
+  overflow:hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.shop-avatar img{width:100%; height:100%; object-fit:cover}
+.shop-meta{min-width:0}
+.shop-meta .shop-name{font-weight:800; font-size:16.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.shop-meta .shop-cat{font-size:12.4px; color:#0c4a6e; font-weight:600; margin-top:1px;}
+.shop-open-toggle{
+  display:flex; align-items:center; gap:9px; background: rgba(255,255,255,.64);
+  border-radius:999px; padding:7px 10px 7px 11px;
+  border:1.5px solid rgba(0,0,0,.06);
+  cursor:pointer;
+  user-select:none;
+  flex-shrink:0;
+}
+.toggle-pill{
+  width:44px; height:26px; background:#d8cfbf; border-radius:999px; position:relative; transition:.2s;
+  flex-shrink:0;
+}
+.toggle-pill.on{ background:#0b7a1b;}
+.toggle-knob{
+  position:absolute; top:3px; left:3px; width:20px; height:20px; background:white; border-radius:50%;
+  box-shadow:0 1px 3px rgba(0,0,0,.2); transition:.2s;
+}
+.toggle-pill.on .toggle-knob{left:21px;}
+.open-label{font-size:12.8px; font-weight:800;}
+.open-label.open{color:var(--green-dark)}
+.open-label.closed{color:#7a5a00}
+
+.app-body{
+  flex:1;
+  padding: 18px 16px 104px;
+  max-width:var(--app-max);
+  margin:0 auto;
+  width:100%;
+}
+
+.section-title{
+  font-family:'Fraunces', Georgia, serif;
+  font-size:26px;
+  margin:2px 2px 14px;
+  letter-spacing:-.01em;
+}
+.section-title-sm{
+  font-weight:800;
+  font-size:13.5px;
+  color:#5b554d;
+  margin: 4px 2px 10px;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+  margin-bottom:18px;
+}
+.stat-card{
+  background:var(--card);
+  border-radius:20px;
+  padding:16px 16px;
+  box-shadow:var(--shadow-sm);
+  border:1px solid #efe9dc;
+}
+.stat-card.full{grid-column:1/-1}
+.stat-top{
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;
+  font-size:12.6px; color:var(--muted); font-weight:700;
+}
+.stat-value{font-size:28px; font-weight:800; letter-spacing:-.02em}
+.stat-sub{font-size:12.2px; color:var(--muted); margin-top:3px}
+.stat-ico{
+  width:34px; height:34px; border-radius:10px; display:flex;align-items:center;justify-content:center; background:var(--yellow-light);
+}
+
+.order-mini{
+  background:var(--card);
+  border-radius:18px;
+  padding:14px 14px;
+  box-shadow:var(--shadow-sm);
+  border:1px solid #efe9dc;
+  display:flex; align-items:center; gap:12px;
+}
+.order-mini + .order-mini{margin-top:10px}
+.om-icon{width:42px;height:42px;border-radius:12px; background:#f6f1e3; display:flex; align-items:center; justify-content:center; flex-shrink:0}
+.om-mid{flex:1; min-width:0}
+.om-id{font-weight:800; font-size:14.5px}
+.om-meta{font-size:12.4px; color:var(--muted); margin-top:2px}
+.om-right{text-align:right; min-width:72px}
+.om-amt{font-weight:800}
+.badge{
+  font-size:11.3px; font-weight:800; padding:4px 9px; border-radius:999px; display:inline-block;
+}
+.badge-new{background:var(--yellow-light); color:#6b4b00}
+.badge-confirmed{background:var(--green-light); color:#0b5f16}
+.badge-delivered{background:#eef6ef; color:#0b5f16}
+.badge-packed{background:#f2efff; color:#4b2fbf}
+
+/* Products */
+.product-toolbar{
+  display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;
+}
+.search-box{
+  flex:1;
+  background:white; border:1.5px solid var(--line);
+  border-radius:14px; padding:12px 14px; font-size:14.5px;
+  outline:none;
+}
+.search-box:focus{border-color:#d6c6a0; box-shadow: 0 0 0 3px rgba(249,214,72,.25)}
+.btn-add{
+  background:var(--green); color:white; border:none; border-radius:14px; padding:12px 14px; font-weight:800; white-space:nowrap; font-size:14px;
+}
+.product-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+}
+.product-card{
+  background:var(--card); border-radius:20px; box-shadow:var(--shadow-sm); overflow:hidden; border:1px solid #efe9dc;
+}
+.product-card img{width:100%; height:130px; object-fit:cover; background:#eee}
+.product-card-body{padding:11px 12px 12px}
+.pc-name{font-weight:800; font-size:14.2px; line-height:1.35}
+.pc-meta{font-size:12.1px; color:var(--muted); margin-top:2px}
+.pc-row{display:flex; align-items:center; justify-content:space-between; margin-top:8px;}
+.pc-price{font-weight:800}
+.pc-stock{font-size:12px; color:#5a554e; font-weight:700}
+.mini-switch{
+  width:40px; height:24px; border-radius:999px; background:#ddd3c2; position:relative; cursor:pointer; flex-shrink:0;
+}
+.mini-switch.on{background:#0b7a1b}
+.mini-switch span{position:absolute; top:3px; left:3px; width:18px; height:18px; background:white; border-radius:50%; transition:.18s}
+.mini-switch.on span{left:19px}
+.pc-actions{display:flex; gap:8px; margin-top:10px}
+.pc-actions button{flex:1; border-radius:10px; border:1.5px solid var(--line); background:#faf8f3; padding:8px; font-size:12.6px; font-weight:700}
+.pc-actions button.danger{ color:#b42519; border-color:#f1c8c3; background:#fff5f4}
+
+/* Orders */
+.order-tabs{
+  background:#ede7d8; padding:4px; border-radius:14px; display:flex; gap:4px; margin-bottom:14px;
+}
+.order-tabs button{
+  flex:1; border:none; background:transparent; padding:10px 10px; border-radius:10px; font-weight:800; font-size:13.6px; color:#5b5446;
+}
+.order-tabs button.active{ background:white; color:#1c1a18; box-shadow: var(--shadow-sm)}
+.order-card{
+  background:white; border-radius:20px; box-shadow: var(--shadow-sm); border:1px solid #efe9dc; padding:15px 14px; margin-bottom:12px;
+}
+.oc-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+.oc-id{font-weight:800; font-size:15.5px}
+.oc-time{font-size:12px; color:var(--muted); margin-top:2px}
+.oc-amt{font-weight:800; font-size:16px}
+.oc-cust{margin-top:10px; font-size:13.6px;}
+.oc-cust b{font-weight:700}
+.oc-items{font-size:13px; color:#49443b; margin-top:6px; line-height:1.55}
+.oc-addr{font-size:12.8px; color:var(--muted); margin-top:7px}
+.oc-pay{font-size:12.3px; color:#5a554d; margin-top:5px; font-weight:700}
+.oc-actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
+.btn-block{flex:1; min-width:124px}
+.btn-green{
+  background:var(--green); color:white; border:none; border-radius:13px; padding:13px 14px; font-weight:800; font-size:14.5px;
+}
+.btn-outline{
+  background:white; border:1.8px solid var(--line-strong); border-radius:13px; padding:13px 14px; font-weight:800; font-size:14.5px;
+}
+.btn-red-ghost{
+  border:1.8px solid #f2c9c4; background:#fff6f5; color:#c0281b; border-radius:13px; padding:13px 14px; font-weight:800; font-size:14.5px;
+}
+.btn-whatsapp{
+  border:1.8px solid #bfe7c5; background:#f3fcf4; color:#0b6f18; border-radius:13px; padding:13px 14px; font-weight:800; font-size:14.5px;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+}
+.full-width{width:100%}
+.status-flow{display:flex; gap:8px; flex-wrap:wrap}
+.status-flow button{flex:1}
+
+/* Profile */
+.profile-card{
+  background:white; border-radius:22px; box-shadow:var(--shadow-sm); border:1px solid #efe9dc; padding:18px 16px; margin-bottom:14px;
+}
+.profile-head{display:flex; align-items:center; gap:14px; margin-bottom:10px}
+.profile-avatar{
+  width:62px;height:62px;border-radius:18px;background:#fff2b8;display:flex;align-items:center;justify-content:center;font-family:'Fraunces', Georgia, serif;font-weight:700;font-size:22px; flex-shrink:0; overflow:hidden;
+}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-name{font-weight:800; font-size:17.5px}
+.profile-sub{font-size:13px; color:var(--muted); margin-top:2px}
+.field-row{margin-bottom:13px}
+.field-row .field-label{margin-bottom:6px}
+.inline-between{display:flex; align-items:center; justify-content:space-between; gap:12px}
+.switch-lg{width:52px; height:30px; background:#d9d1c0; border-radius:999px; position:relative; cursor:pointer; flex-shrink:0}
+.switch-lg.on{background:var(--green)}
+.switch-lg span{position:absolute; top:3px; left:3px; width:24px; height:24px; background:white; border-radius:50%; box-shadow:0 1px 3px rgba(0,0,0,.18); transition:.18s}
+.switch-lg.on span{left:25px}
+.range-wrap{display:flex; align-items:center; gap:12px}
+input[type=range]{
+  flex:1; accent-color: var(--green);
+}
+.range-val{font-weight:800; min-width:52px; text-align:right; font-size:14px}
+.meta-note{font-size:12.3px; color:var(--muted); margin-top:5px}
+
+/* Bottom nav */
+.bottom-nav{
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:0;
+  width:100%;
+  max-width:var(--app-max);
+  background: rgba(255,255,255, .96);
+  backdrop-filter: blur(12px);
+  border-top:1.5px solid #e5ddd0;
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  padding: 8px 8px calc(10px + env(safe-area-inset-bottom, 0px));
+  z-index:50;
+}
+.nav-item{
+  background:transparent; border:none; padding:7px 6px 5px; border-radius:14px; color:#7a7468; font-size:11.2px; font-weight:800;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.nav-item svg{width:22px; height:22px; opacity:.88}
+.nav-item.active{ color:#14120f; }
+.nav-item.active svg{ opacity:1}
+.nav-item.active .nav-ico-wrap{
+  background:#7dd3fc; padding:6px 14px; border-radius:12px;
+}
+.nav-ico-wrap{display:flex; align-items:center; justify-content:center}
+
+/* Modals / sheets */
+.sheet-backdrop{
+  position:fixed; inset:0; background:rgba(27,21,0,.42); z-index:90; display:none;
+}
+.sheet-backdrop.open{display:block}
+.sheet{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:var(--app-max);
+  background:#f7f4ec; border-top-left-radius:26px; border-top-right-radius:26px;
+  z-index:95; max-height: 88dvh; overflow:auto;
+  box-shadow: 0 -16px 40px rgba(0,0,0,.17);
+  display:none;
+}
+.sheet.open{display:block; animation: sheetUp .22s ease}
+@keyframes sheetUp{from{transform:translate(-50%, 20px); opacity:.5} to{transform:translate(-50%,0); opacity:1}}
+.sheet-handle{ width:42px; height:5px; border-radius:99px; background:#d7cfbe; margin:12px auto 6px}
+.sheet-inner{padding: 6px 16px 22px}
+.sheet-title{font-family:'Fraunces', Georgia, serif; font-size:24px; margin-bottom:12px}
+.sheet-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.sheet-grid .full{grid-column:1/-1}
+.sheet-actions{display:flex; gap:10px; margin-top:14px}
+.sheet-actions button{flex:1}
+
+/* Utilities */
+.hidden{display:none !important}
+.empty-state{
+  background:white; border-radius:20px; padding:28px 18px; text-align:center; color:var(--muted);
+  border:1px dashed #d8cfba;
+}
+.empty-state b{color:#3b3428}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+.row-gap{display:flex; flex-direction:column; gap:12px}
+.flex{display:flex; gap:10px; align-items:center}
+.divider{height:1px; background:var(--line); margin:14px 0}
+.toast{
+  position:fixed; left:50%; bottom:88px; transform:translateX(-50%) translateY(18px);
+  background:#1b1a18; color:white; padding:12px 16px; border-radius:14px; font-weight:700; font-size:13.6px;
+  z-index:120; opacity:0; pointer-events:none; transition:.22s; max-width: calc(100% - 28px); text-align:center; white-space:nowrap;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+.top-notice{
+  background:#fff6cf; border:1px solid #f0d77a; color:#5b4100; border-radius:13px; padding:10px 12px; font-size:12.7px; font-weight:700; margin-bottom:12px;
+}
+.kbd{font-family: ui-monospace, monospace; background:#fff1b8; padding:2px 7px; border-radius:6px; font-weight:800}
+
+/* small helpers */
+.w-100{width:100%}
+.text-muted{color:var(--muted)}
+.text-sm{font-size:13px}
+.strong{font-weight:800}
+
+/* Responsive niceties */
+@media (min-width: 520px){
+  body{background:#ddd6c5}
+}
+
+/* Scrollbar hide */
+*{scrollbar-width:none}
+*::-webkit-scrollbar{display:none}
+
+/* --- Commission / Order Alert v2 --- */
+.commission-card{background:white;border-radius:22px;box-shadow:var(--shadow-sm);border:1px solid #efe9dc;padding:18px 16px;margin-bottom:14px}
+.commission-row{display:flex;justify-content:space-between;align-items:center;margin:6px 0;font-size:14px}
+.commission-row strong{font-size:15px}
+.commission-qr{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.commission-qr img{width:140px;height:140px;border-radius:14px;border:1px solid var(--line);background:#fff}
+.upi-box{flex:1;min-width:160px}
+.upi-id{background:#f8f5ee;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:800;font-size:14px}
+.btn-upi{display:block;width:100%;background:#5f259f;color:#fff;border:none;border-radius:13px;padding:13px 14px;font-weight:800;font-size:14.5px;margin-top:10px;text-align:center;text-decoration:none}
+.btn-upi:active{transform:scale(.99)}
+.pay-history{font-size:12.5px;color:var(--muted);margin-top:8px}
+.ring-dot{width:9px;height:9px;background:#ff3b30;border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 1.2s infinite}
+@keyframes pulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}
+.order-card.ringing{outline:2px solid #ff3b30;outline-offset:-2px;animation:ringShake .5s 2}
+@keyframes ringShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.reject-sheet .reason-btn{width:100%;text-align:left;background:#faf8f3;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:700;margin-bottom:8px}
+.reject-sheet .reason-btn:hover{background:#f5f0e4}
+.nav-item .badge-dot{position:absolute;top:4px;right:14px;width:8px;height:8px;background:#ff3b30;border-radius:50%}
+.bottom-nav{grid-template-columns:repeat(5,1fr)}
+</style>
+
+</head>
+<body>
+<div class="app-shell" id="appShell">
+
+  <!-- AUTH -->
+  <div id="auth-view">
+    <div class="auth-top">
+      <div class="balcony-mark">balcony<br><em>seller hub</em></div>
+      <div class="balcony-sub">Your local shop, online. 1% commission.</div>
+    </div>
+    <div class="auth-card-wrap">
+      <div class="auth-card" id="loginCard">
+        <!-- Login Step -->
+        <div id="loginStepPhone">
+          <div class="auth-title">Seller Login</div>
+          <p class="auth-hint">Enter your WhatsApp / mobile number. We'll send you an OTP.</p>
+          <label class="field-label">Mobile Number</label>
+          <div class="phone-row" style="margin-bottom:14px">
+            <span>+91</span>
+            <input id="loginPhone" inputmode="numeric" maxlength="10" placeholder="98765 43210">
+          </div>
+          <button class="btn-primary btn-yellow" id="btnSendOtp">Send OTP</button>
+          <button class="btn-outline w-100 mt-8" id="btnDemoLogin" style="padding:13px">Demo mode – Skip login</button>
+          <div class="auth-footnote">New seller? <span class="link-strong" id="goToRegister">Register</span><br/>Demo: <b>9999999999</b> &nbsp; OTP: <b>1234</b></div>
+        </div>
+        <!-- OTP Step -->
+        <div id="loginStepOtp" class="hidden">
+          <div class="auth-title">OTP daalein</div>
+          <p class="auth-hint">+91 <span id="otpPhoneLabel"></span> par bheja gaya code daalein.</p>
+          <div class="otp-boxes" id="otpBoxes">
+            <input maxlength="1" inputmode="numeric">
+            <input maxlength="1" inputmode="numeric">
+            <input maxlength="1" inputmode="numeric">
+            <input maxlength="1" inputmode="numeric">
+          </div>
+          <p class="muted-sm" style="margin-bottom:14px">Demo OTP: <span class="kbd">1234</span></p>
+          <button class="btn-primary btn-yellow" id="btnVerifyOtp">Verify & Login</button>
+          <div style="text-align:center; margin-top:10px"><button class="btn-ghost" id="btnBackPhone">← Number badlein</button></div>
+        </div>
+      </div>
+
+      <!-- Register Card -->
+      <div class="auth-card hidden" id="registerCard">
+        <div class="auth-title">Create Seller Account</div>
+        <p class="auth-hint">Get your shop online in 2 minutes.</p>
+        <div class="reg-grid">
+          <div class="full">
+            <label class="field-label">Shop Photo</label>
+            <div class="photo-uploader" id="regPhotoBox">
+              <input type="file" accept="image/*" id="regPhotoInput" hidden>
+              <div id="regPhotoPlaceholder">
+                <div style="font-size:22px">📷</div>
+                <div class="uploader-hint"><b>Upload photo</b><br>Logo / shop front</div>
+              </div>
+              <img id="regPhotoPreview" class="hidden" alt="Shop preview">
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Shop Name *</label>
+            <input class="input" id="regShopName" placeholder="e.g. Gupta Kirana">
+          </div>
+          <div>
+            <label class="field-label">Owner Name *</label>
+            <input class="input" id="regOwner" placeholder="Aap naam">
+          </div>
+          <div>
+            <label class="field-label">Category *</label>
+            <select class="select" id="regCategory">
+              <option value="Kirana">Kirana</option>
+              <option value=">All<zi/Phal">>All<zi / Phal</option>
+              <option value="Plants/Nursery">Plants / Nursery</option>
+              <option value="Medical">Medical</option>
+              <option value="Bakery">Bakery</option>
+              <option value="Hardware">Hardware</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Pincode</label>
+            <input class="input" id="regPincode" value="484886">
+          </div>
+          <div class="full">
+            <label class="field-label">Shop Address *</label>
+            <input class="input" id="regAddress" placeholder="Area / Gali / Landmark">
+          </div>
+          <div>
+            <label class="field-label">WhatsApp Number *</label>
+            <input class="input" id="regWhatsapp" inputmode="numeric" placeholder="98765 43210" maxlength="10">
+          </div>
+          <div>
+            <label class="field-label">UPI ID</label>
+            <input class="input" id="regUpi" placeholder="yourname@upi">
+          </div>
+          <div class="full">
+            <label class="field-label">Login Mobile Number *</label>
+            <div class="phone-row">
+              <span>+91</span>
+              <input id="regPhone" inputmode="numeric" maxlength="10" placeholder="98765 43210">
+            </div>
+          </div>
+          <div class="full" style="margin-top:4px">
+            <button class="btn-primary btn-yellow" id="btnRegister">Create Account</button>
+            <div style="text-align:center; margin-top:8px"><button class="btn-ghost" id="backToLogin">← Login par wapas</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="main-view" hidden>
+    <header class="app-header">
+      <div class="header-row">
+        <div class="shop-identity">
+          <div class="shop-avatar" id="headerAvatar">B🌊</div>
+          <div class="shop-meta">
+            <div class="shop-name" id="headerShopName">Balcony Shop</div>
+            <div class="shop-cat" id="headerShopCat">Plants / Nursery • Mandhar</div>
+          </div>
+        </div>
+        <div class="shop-open-toggle" id="shopOpenToggle" role="button" tabindex="0" aria-label="Shop open/close">
+          <div class="toggle-pill on" id="openTogglePill"><div class="toggle-knob"></div></div>
+          <div class="open-label open" id="openToggleLabel">ON</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <!-- HOME -->
+      <main id="view-home">
+        <div class="section-title">Today's Dashboard</div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-top">Today's Orders <span class="stat-ico">📦</span></div>
+            <div class="stat-value" id="statTodayOrders">0</div>
+            <div class="stat-sub" id="statTodaySub">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">Pending <span class="stat-ico">⏱️</span></div>
+            <div class="stat-value" id="statPending">0</div>
+            <div class="stat-sub">Confirm karna baaki</div>
+          </div>
+          <div class="stat-card full">
+            <div class="stat-top">Today's Revenue <span class="stat-ico">💸</span></div>
+            <div class="stat-value" id="statEarning">₹0</div>
+            <div class="stat-sub">Delivered orders  total</div>
+          </div>
+        </div>
+
+        <div class="section-title-sm">Recent Orders</div>
+        <div id="homeRecentOrders"></div>
+        <div class="mt-12" style="text-align:center">
+          <button class="btn-ghost" id="btnGoOrders">>All<hi orders dekhein →</button>
+        </div>
+      </main>
+
+      <!-- PRODUCTS -->
+      <main id="view-products" hidden>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px">
+          <div class="section-title" style="margin:0">Products</div>
+          <button class="btn-add" id="btnNewProduct">+ New Product</button>
+        </div>
+        <div class="product-toolbar">
+          <input class="search-box" id="productSearch" placeholder="Product khojein…">
+        </div>
+        <div id="productGrid" class="product-grid"></div>
+        <div id="productEmpty" class="empty-state hidden">Abhi koi product nahi hai.<br><b>“+ New Product”</b> dabakar jodein.</div>
+      </main>
+
+      <!-- ORDERS -->
+      <main id="view-orders" hidden>
+        <div class="section-title">Orders</div>
+        <div class="order-tabs" id="orderTabs">
+          <button class="active" data-filter="new">>New<</button>
+          <button data-filter="confirmed">Confirmed</button>
+          <button data-filter="all">>All<</button>
+        </div>
+        <div id="ordersList"></div>
+        <div id="ordersEmpty" class="empty-state hidden">No orders in this filter.</div>
+      </main>
+
+
+      <!-- COMMISSION -->
+      <main id="view-commission" hidden>
+        <div class="section-title">Commission Pay</div>
+        <div class="commission-card">
+          <div class="commission-row"><span>Commission Rate (Admin set)</span><strong id="cmRate">1%</strong></div>
+          <div class="commission-row"><span>Total Delivered Sales</span><strong id="cmSales">₹0</strong></div>
+          <div class="commission-row"><span>Total Commission Due</span><strong id="cmDue">₹0</strong></div>
+          <div class="commission-row"><span>Paid till now</span><strong id="cmPaid" style="color:var(--green)">₹0</strong></div>
+          <div class="divider"></div>
+          <div class="commission-row"><span>Balance Payable</span><strong id="cmBalance" style="font-size:18px">₹0</strong></div>
+          <div class="commission-qr">
+            <img src="data:image/webp;base64,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" alt="UPI QR">
+            <div class="upi-box">
+              <div style="font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:4px">Admin UPI</div>
+              <div class="upi-id" id="upiIdText">7879743129@ibl</div>
+              <a id="upiPayLink" class="btn-upi" href="#">Pay via UPI App</a>
+              <button class="btn-outline full-width mt-8" id="btnMarkPaid" style="padding:11px">I have Paid – Submit UTR</button>
+              <div class="pay-history" id="payHistory">No payments yet</div>
+            </div>
+          </div>
+          <p class="meta-note mt-12">Commission har saman ke price par 1% (Admin badal sakta hai). Payment ke baad UTR daalein, Admin verify karega.</p>
+        </div>
+      </main>
+
+      <!-- PROFILE -->
+      <main id="view-profile" hidden>
+        <div class="section-title">Shop Profile</div>
+
+        <div class="profile-card">
+          <div class="profile-head">
+            <div class="profile-avatar" id="profileAvatar">BS</div>
+            <div>
+              <div class="profile-name" id="profileShopName">Balcony Shop</div>
+              <div class="profile-sub" id="profileShopSub">Plants / Nursery • 484886</div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="field-row">
+            <label class="field-label">Shop Name</label>
+            <input class="input" id="pfShopName">
+          </div>
+          <div class="two-col">
+            <div class="field-row">
+              <label class="field-label">Owner Name</label>
+              <input class="input" id="pfOwner">
+            </div>
+            <div class="field-row">
+              <label class="field-label">Category</label>
+              <select class="select" id="pfCategory">
+                <option>Kirana</option>
+                <option>>All<zi/Phal</option>
+                <option>Plants/Nursery</option>
+                <option>Medical</option>
+                <option>Bakery</option>
+                <option>Hardware</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <label class="field-label">Address</label>
+            <input class="input" id="pfAddress">
+          </div>
+          <div class="two-col">
+            <div class="field-row">
+              <label class="field-label">Pincode</label>
+              <input class="input" id="pfPincode">
+            </div>
+            <div class="field-row">
+              <label class="field-label">WhatsApp</label>
+              <input class="input" id="pfWhatsapp" inputmode="numeric">
+            </div>
+          <div class="field-row">
+            <label class="field-label">UPI ID</label>
+            <input class="input" id="pfUpi" placeholder="yourname@upi">
+          </div>
+        </div>
+
+        <div class="profile-card">
+          <div class="section-title-sm" style="margin:0 0 10px 0">Delivery Settings</div>
+          <div class="field-row">
+            <div class="inline-between">
+              <div>
+                <div class="strong">COD Available</div>
+                <div class="meta-note">Cash on Delivery enabled</div>
+              </div>
+              <div class="switch-lg on" id="pfCodToggle"><span></span></div>
+            </div>
+          </div>
+          <div class="field-row">
+            <label class="field-label">Delivery Radius</label>
+            <div class="range-wrap">
+              <input type="range" min="1" max="5" step="1" value="3" id="pfRadius">
+              <div class="range-val" id="pfRadiusVal">3 km</div>
+            </div>
+          </div>
+          <div class="field-row">
+            <label class="field-label">Delivery Charge (₹)</label>
+          </div>
+          <button class="btn-primary w-100" id="btnSaveProfile">Save Profile</button>
+        </div>
+
+        <div class="profile-card">
+          <button class="btn-outline full-width" id="btnLogout" style="border-color:#f1c7c1; color:#b92519">Logout</button>
+          <p class="meta-note" style="text-align:center; margin-top:10px">Version 1.2 • Made for Balcony Sellers</p>
+        </div>
+        <div style="height:8px"></div>
+      </main>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item active" data-view="home">
+        <span class="nav-ico-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/></svg>
+        </span>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" data-view="products">
+        <span class="nav-ico-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.7"/><rect x="14" y="3" width="7" height="7" rx="1.7"/><rect x="14" y="14" width="7" height="7" rx="1.7"/><rect x="3" y="14" width="7" height="7" rx="1.7"/></svg>
+        </span>
+        <span>Products</span>
+      </button>
+      <button class="nav-item" data-view="orders">
+        <span class="nav-ico-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h13l-1.4 8.5a2 2 0 0 1-2 1.5H8.4"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/><path d="M6 6l-1-2H3"/></svg>
+        </span>
+        <span>Orders</span>
+      </button>
+      
+      <button class="nav-item" data-view="commission" style="position:relative">
+        <span class="nav-ico-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h10M7 14h6"/></svg>
+        </span>
+        <span>Pay</span>
+      </button>
+      <button class="nav-item" data-view="profile">
+        <span class="nav-ico-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="9" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
+        </span>
+        <span>Profile</span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<!-- Product Add/Edit Sheet -->
+<div class="sheet-backdrop" id="productSheetBackdrop"></div>
+<div class="sheet" id="productSheet" aria-modal="true" role="dialog">
+  <div class="sheet-handle"></div>
+  <div class="sheet-inner">
+    <div class="sheet-title" id="productSheetTitle">Add New Product</div>
+    
+    <div class="photo-uploader" id="prodPhotoBox" style="margin-bottom:12px">
+      <input type="file" accept="image/*" id="prodPhotoInput" hidden>
+      <div id="prodPhotoPlaceholder">
+        <div style="font-size:22px">🖼️</div>
+        <div class="uploader-hint"><b>Product photo upload</b><br>JPG / PNG</div>
+      </div>
+      <img id="prodPhotoPreview" class="hidden" alt="Product preview">
+    </div>
+
+    <div class="sheet-grid">
+      <div class="full">
+        <label class="field-label">Product Name *</label>
+        <input class="input" id="pName" placeholder="e.g. Tulsi Plant">
+      </div>
+      <div>
+        <label class="field-label">Category</label>
+        <select class="select" id="pCategory">
+          <option>Plants</option>
+          <option>Seeds</option>
+          <option>Pots</option>
+          <option>Fertilizer</option>
+          <option>Kirana</option>
+          <option>>All<zi</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">Unit</label>
+        <select class="select" id="pUnit">
+          <option value="piece">piece</option>
+          <option value="kg">kg</option>
+          <option value="pot">pot</option>
+          <option value="packet">packet</option>
+          <option value="litre">litre</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">Price ₹ *</label>
+        <input class="input" id="pPrice" type="number" min="0" placeholder="149">
+      </div>
+      <div>
+        <label class="field-label">MRP ₹</label>
+        <input class="input" id="pMrp" type="number" min="0" placeholder="199">
+      </div>
+      <div>
+        <label class="field-label">Stock Qty</label>
+        <input class="input" id="pStock" type="number" min="0" placeholder="20">
+      </div>
+      <div>
+        <label class="field-label">Active?</label>
+        <div style="background:#f8f5ee; border:1.6px solid var(--line); border-radius:14px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between">
+          <span style="font-weight:700; font-size:14px">Show in shop</span>
+          <div class="switch-lg on" id="pActiveToggle"><span></span></div>
+        </div>
+      </div>
+      <div class="full">
+        <label class="field-label">Description</label>
+        <textarea class="textarea" id="pDesc" rows="2" placeholder="Short details..."></textarea>
+      </div>
+      <div class="full sheet-actions">
+        <button class="btn-outline" id="btnCancelProduct">Cancel</button>
+        <button class="btn-primary btn-yellow" id="btnSaveProduct">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Reject Reason Sheet -->
+<div class="sheet-backdrop" id="rejectSheetBackdrop"></div>
+<div class="sheet reject-sheet" id="rejectSheet" aria-modal="true" role="dialog">
+  <div class="sheet-handle"></div>
+  <div class="sheet-inner">
+    <div class="sheet-title">Order Reject – Reason?</div>
+    <button class="reason-btn" data-reason="Out of stock">Out of stock</button>
+    <button class="reason-btn" data-reason="Delivery area se bahar">Delivery area se bahar</button>
+    <button class="reason-btn" data-reason="Shop closed">Shop closed</button>
+    <button class="reason-btn" data-reason="custom">Custom reason likhein…</button>
+    <div id="customReasonWrap" class="hidden mt-8">
+      <input class="input" id="customReasonInput" placeholder="Reason likhein">
+      <button class="btn-primary btn-yellow w-100 mt-8" id="btnSubmitCustomReason">Reject karein</button>
+    </div>
+    <button class="btn-ghost w-100 mt-8" id="btnCancelReject">Cancel</button>
+  </div>
+</div>
+<!-- Toast -->
+
+<div class="toast" id="toast">Saved</div>
+
+<script>
+/* ---------- Storage helpers ---------- */
+const LS_SELLERS = 'balcony_sellers';
+const LS_SESSION = 'balcony_session';
+const prodKey = sid => `balcony_products_${sid}`;
+const orderKey = sid => `balcony_orders_${sid}`;
+
+function getSellers(){ try { return JSON.parse(localStorage.getItem(LS_SELLERS) || '[]') } catch { return [] } }
+function saveSellers(list){ localStorage.setItem(LS_SELLERS, JSON.stringify(list)) }
+// 30-day session
+function getSession(){
+  try {
+    const raw = localStorage.getItem(LS_SESSION);
+    if(!raw) return null;
+    // legacy plain id support
+    if(!raw.startsWith('{')) return raw;
+    const o = JSON.parse(raw);
+    if(o.exp && Date.now() > o.exp){ localStorage.removeItem(LS_SESSION); return null; }
+    return o.id || null;
+  } catch { return null }
+}
+function setSession(id){
+  const exp = Date.now() + 30*24*60*60*1000;
+  localStorage.setItem(LS_SESSION, JSON.stringify({id, exp}));
+}
+function clearSession(){ localStorage.removeItem(LS_SESSION) }
+
+function getProducts(sid){
+  try { return JSON.parse(localStorage.getItem(prodKey(sid)) || '[]') } catch { return [] }
+}
+function saveProducts(sid, list){ localStorage.setItem(prodKey(sid), JSON.stringify(list)) }
+
+function getOrders(sid){
+  try { return JSON.parse(localStorage.getItem(orderKey(sid)) || '[]') } catch { return [] }
+}
+function saveOrders(sid, list){ localStorage.setItem(orderKey(sid), JSON.stringify(list)) }
+
+function uid(prefix='id'){ return prefix + '_' + Math.random().toString(36).slice(2,9) }
+function initials(name){ return (name||'').split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase() || 'BS' }
+function todayStr(d=new Date()){ return d.toISOString().slice(0,10) }
+function inr(n){ return '₹' + Number(n||0).toLocaleString('en-IN') }
+function esc(s){ return String(s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])) }
+
+/* ---------- Seed ---------- */
+(function seed(){
+  let sellers = getSellers();
+  if(sellers.length === 0){
+    const sid = 'seller_demo_1';
+    sellers = [{
+      id: sid,
+      shopName: 'Balcony Shop',
+      owner: 'Aman Verma',
+      category: 'Plants/Nursery',
+      address: 'Bus Stand Road, Mandhar',
+      pincode: '484886',
+      whatsapp: '9999999999',
+      phone: '9999999999',
+      upi: 'amanbalcony@upi',
+      photo: '',
+      isOpen: true,
+      codEnabled: true,
+      deliveryRadius: 3,
+      createdAt: Date.now()
+    }];
+    saveSellers(sellers);
+
+    saveProducts(sid, [
+      {id: uid('p'), name:'Tulsi Plant – Healthy', category:'Plants', price:149, mrp:199, stock:34, unit:'pot', active:true, description:'Ghar  liye sacred tulsi, 6 inch pot me.', photo:'https://picsum.photos/seed/balcony_tulsi/600/600'},
+      {id: uid('p'), name:'Money Plant – Hanging', category:'Plants', price:199, mrp:249, stock:12, unit:'pot', active:true, description:'Indoor air purifier plant.', photo:'https://picsum.photos/seed/balcony_money/600/600'},
+      {id: uid('p'), name:'Rose Plant – Red', category:'Plants', price:179, mrp:220, stock:8, unit:'pot', active:true, description:'Desi gulab, flowering.', photo:'https://picsum.photos/seed/balcony_rose/600/600'},
+    ]);
+
+    const now = Date.now();
+    saveOrders(sid, [
+      {
+        id:'BS-1023', buyerName:'Ritu Sahu', buyerPhone:'9876512345',
+        items: [{name:'Tulsi Plant – Healthy', qty:2, price:149}, {name:'Rose Plant – Red', qty:1, price:179}],
+        total: 477, address:'Ward 4, Near Shiv Mandir, Mandhar',
+        payment:'UPI', status:'new', time: now - 18*60*1000, note:''
+      },
+      {
+        id:'BS-1021', buyerName:'Deepak Yadav', buyerPhone:'9826011122',
+        items: [{name:'Money Plant – Hanging', qty:1, price:199}],
+        total: 199, address:'Bus Stand  paas, Mandhar',
+        payment:'COD', status:'confirmed', time: now - 1000*60*60*3, note:''
+      },
+      {
+        id:'BS-1019', buyerName:'Anjali Gupta', buyerPhone:'9755217788',
+        items: [{name:'Tulsi Plant – Healthy', qty:1, price:149}],
+        total: 149, address:'Shanti Nagar, Mandhar',
+        payment:'UPI', status:'delivered', time: now - 1000*60*60*27, note:''
+      }
+    ]);
+  }
+})();
+
+/* ---------- App State ---------- */
+let currentSeller = null;
+let currentOrderFilter = 'new';
+let productEditId = null;
+let productPhotoDataUrl = '';
+let profileCodEnabled = true;
+let productActive = true;
+
+/* ---------- UI Helpers ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>t.classList.remove('show'), 1900);
+}
+
+function showView(view){
+  ['home','products','orders','profile'].forEach(v=>{
+    const el = $('#view-'+v);
+    if(el) el.hidden = v !== view;
+  });
+  $$('.nav-item').forEach(b=>{
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  window.scrollTo({top:0, behavior:'auto'});
+  if(view==='products') renderProducts();
+  if(view==='orders') renderOrders();
+  if(view==='home') renderHome();
+  if(view==='profile') renderProfileForm();
+}
+
+/* ---------- Auth ---------- */
+function openAuth(){
+  $('#auth-view').hidden = false;
+  $('#main-view').hidden = true;
+  $('#loginCard').classList.remove('hidden');
+  $('#registerCard').classList.add('hidden');
+  $('#loginStepPhone').classList.remove('hidden');
+  $('#loginStepOtp').classList.add('hidden');
+}
+
+function openApp(seller){
+  currentSeller = seller;
+  $('#auth-view').hidden = true;
+  $('#main-view').hidden = false;
+  renderHeader();
+  showView('home');
+}
+
+function doDemoLogin(){
+  const sellers = getSellers();
+  let seller = sellers.find(s=>s.phone==='9999999999') || sellers[0];
+  if(!seller){ toast('No seller found, register first'); openAuth(); return; }
+  setSession(seller.id);
+  openApp(seller);
+  toast('Demo login ✓');
+}
+
+function checkSession(){
+  const sid = getSession();
+  if(!sid){
+    // auto-login demo for content:// / first run – OTP screen won't block you
+    const sellers = getSellers();
+    const demo = sellers.find(s=>s.phone==='9999999999') || sellers[0];
+    if(demo){ setSession(demo.id); openApp(demo); return; }
+    openAuth(); return;
+  }
+  const seller = getSellers().find(s=>s.id===sid);
+  if(!seller){ clearSession(); checkSession(); return;}
+  openApp(seller);
+}
+
+/* OTP logic */
+let pendingLoginPhone = '';
+$('#btnSendOtp').addEventListener('click', ()=>{
+  let ph = $('#loginPhone').value.replace(/\D/g,'').slice(0,10);
+  if(ph.length !== 10){ toast('10 digit mobile daalein'); return; }
+  pendingLoginPhone = ph;
+  $('#otpPhoneLabel').textContent = ph;
+  $('#loginStepPhone').classList.add('hidden');
+  $('#loginStepOtp').classList.remove('hidden');
+  setTimeout(()=> $('#otpBoxes input').focus(), 30);
+});
+$('#btnBackPhone').addEventListener('click', ()=>{
+  $('#loginStepOtp').classList.add('hidden');
+  $('#loginStepPhone').classList.remove('hidden');
+});
+
+$$('#otpBoxes input').forEach((inp, i, arr)=>{
+  inp.addEventListener('input', e=>{
+    e.target.value = e.target.value.replace(/\D/,'');
+    if(e.target.value && i < arr.length-1) arr[i+1].focus();
+    // auto-verify when 4 digits filled
+    const code = [...arr].map(x=>x.value).join('');
+    if(code.length === 4){ setTimeout(doVerify, 80); }
+  });
+  inp.addEventListener('keydown', e=>{
+    if(e.key==='Backspace' && !inp.value && i>0) arr[i-1].focus();
+  });
+});
+
+$('#btnVerifyOtp').addEventListener('click', doVerify);
+function doVerify(){
+  const code = [...document.querySelectorAll('#otpBoxes input')].map(i=>i.value).join('');
+  if(code !== '1234'){ toast('Galat OTP. Demo OTP: 1234'); return; }
+  const sellers = getSellers();
+  let seller = sellers.find(s=> s.phone === pendingLoginPhone);
+  if(!seller){
+    // go to register with phone prefilled
+    $('#loginCard').classList.add('hidden');
+    $('#registerCard').classList.remove('hidden');
+    $('#regPhone').value = pendingLoginPhone;
+    $('#regWhatsapp').value = pendingLoginPhone;
+    toast('Account not found – please register');
+    return;
+  }
+  setSession(seller.id);
+  openApp(seller);
+}
+
+// Demo login
+document.getElementById('btnDemoLogin')?.addEventListener('click', doDemoLogin);
+
+// Register links
+$('#goToRegister').addEventListener('click', ()=>{
+  $('#loginCard').classList.add('hidden');
+  $('#registerCard').classList.remove('hidden');
+  $('#regPhone').value = $('#loginPhone').value.replace(/\D/g,'').slice(0,10);
+});
+$('#backToLogin').addEventListener('click', ()=>{
+  $('#registerCard').classList.add('hidden');
+  $('#loginCard').classList.remove('hidden');
+});
+
+// Register photo
+let regPhotoData = '';
+$('#regPhotoBox').addEventListener('click', ()=> $('#regPhotoInput').click());
+$('#regPhotoInput').addEventListener('change', e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=> {
+    regPhotoData = rd.result;
+    $('#regPhotoPreview').src = regPhotoData;
+    $('#regPhotoPreview').classList.remove('hidden');
+    $('#regPhotoPlaceholder').classList.add('hidden');
+    $('#regPhotoBox').classList.add('has-img');
+  };
+  rd.readAsDataURL(f);
+});
+
+$('#btnRegister').addEventListener('click', ()=>{
+  const shopName = $('#regShopName').value.trim();
+  const owner = $('#regOwner').value.trim();
+  const category = $('#regCategory').value;
+  const address = $('#regAddress').value.trim();
+  const pincode = $('#regPincode').value.trim() || '484886';
+  const whatsapp = $('#regWhatsapp').value.replace(/\D/g,'');
+  const upi = $('#regUpi').value.trim();
+  const phone = $('#regPhone').value.replace(/\D/g,'');
+
+  if(!shopName || !owner || !address || phone.length !== 10){
+    toast('Shop name, owner, address aur 10-digit phone zaroori');
+    return;
+  }
+  const sellers = getSellers();
+  if(sellers.find(s=>s.phone===phone)){ toast('Is number se account already hai. Seller Login.'); return; }
+  const seller = {
+    id: uid('seller'),
+    shopName, owner, category, address, pincode,
+    whatsapp: whatsapp || phone,
+    phone,
+    upi,
+    photo: regPhotoData,
+    isOpen: true,
+    codEnabled: true,
+    deliveryRadius: 3,
+    createdAt: Date.now()
+  };
+  sellers.push(seller);
+  saveSellers(sellers);
+  saveProducts(seller.id, []);
+  saveOrders(seller.id, []);
+  setSession(seller.id);
+  toast('Account ban gaya!');
+  openApp(seller);
+});
+
+/* ---------- Header / Home ---------- */
+function renderHeader(){
+  if(!currentSeller) return;
+  const s = currentSeller;
+  $('#headerShopName').textContent = s.shopName;
+  $('#headerShopCat').textContent = `${s.category} • ${s.address.split(',')[0]}`;
+  const av = $('#headerAvatar');
+  av.textContent = initials(s.shopName);
+  av.innerHTML = s.photo ? `<img src="${esc(s.photo)}" alt="">` : initials(s.shopName);
+  updateOpenToggleUI();
+}
+
+function updateOpenToggleUI(){
+  const on = !!currentSeller.isOpen;
+  $('#openTogglePill').classList.toggle('on', on);
+  $('#openToggleLabel').textContent = on ? 'ON' : 'OFF';
+  $('#openToggleLabel').className = 'open-label ' + (on ? 'open' : 'closed');
+}
+
+$('#shopOpenToggle').addEventListener('click', ()=>{
+  currentSeller.isOpen = !currentSeller.isOpen;
+  persistSeller();
+  updateOpenToggleUI();
+  toast(currentSeller.isOpen ? 'Shop ON ✅' : 'Shop OFF');
+  renderHome();
+});
+
+function persistSeller(){
+  const sellers = getSellers();
+  const i = sellers.findIndex(s=>s.id===currentSeller.id);
+  if(i>=0){ sellers[i] = currentSeller; saveSellers(sellers); }
+}
+
+function renderHome(){
+  const orders = getOrders(currentSeller.id);
+  const today = todayStr();
+  const todayOrders = orders.filter(o=> todayStr(new Date(o.time)) === today);
+  const pending = orders.filter(o=> o.status==='new').length;
+  const earning = orders.filter(o=> o.status==='delivered' && todayStr(new Date(o.time)) === today)
+    .reduce((sum,o)=> sum + Number(o.total||0), 0);
+
+  $('#statTodayOrders').textContent = todayOrders.length;
+  $('#statTodaySub').textContent = pending ? `${pending} confirm baaki` : '>All< clear ✓';
+  $('#statPending').textContent = pending;
+  $('#statEarning').textContent = inr(earning);
+
+  const recent = [...orders].sort((a,b)=>b.time-a.time).slice(0,4);
+  const el = $('#homeRecentOrders');
+  if(recent.length===0){
+    el.innerHTML = `<div class="empty-state">No orders yet. Add products and share your shop!</div>`;
+    return;
+  }
+  el.innerHTML = recent.map(o=>`
+    <div class="order-mini" data-oid="${o.id}" style="cursor:pointer">
+      <div class="om-icon">🧾</div>
+      <div class="om-mid">
+        <div class="om-id">${esc(o.id)}</div>
+        <div class="om-meta">${esc(o.buyerName)} • ${new Date(o.time).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+      <div class="om-right">
+        <div class="om-amt">${inr(o.total)}</div>
+        <div style="margin-top:4px"><span class="badge badge-${o.status==='new'?'new': o.status==='delivered'?'delivered':'confirmed'}">${statusLabel(o.status)}</span></div>
+      </div>
+    </div>
+  `).join('');
+  el.querySelectorAll('.order-mini').forEach(div=>{
+    div.addEventListener('click', ()=>{
+      showView('orders');
+      setTimeout(()=>{
+        const card = document.querySelector(`.order-card[data-order-id="${div.dataset.oid}"]`);
+        if(card) card.scrollIntoView({behavior:'smooth', block:'center'});
+      }, 60);
+    });
+  });
+}
+
+/* ---------- Products ---------- */
+function renderProducts(){
+  const q = ($('#productSearch').value||'').toLowerCase().trim();
+  let list = getProducts(currentSeller.id);
+  if(q) list = list.filter(p => p.name.toLowerCase().includes(q));
+  const grid = $('#productGrid');
+  const empty = $('#productEmpty');
+  if(list.length===0){
+    grid.innerHTML='';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  grid.innerHTML = list.map(p=>`
+    <div class="product-card">
+      <img src="${esc(p.photo || 'https://picsum.photos/seed/balcony_fallback_'+p.id+'/600/600')}" alt="${esc(p.name)}" loading="lazy">
+      <div class="product-card-body">
+        <div class="pc-name">${esc(p.name)}</div>
+        <div class="pc-meta">${esc(p.category||'General')} • / ${esc(p.unit||'piece')}</div>
+        <div class="pc-row">
+          <div class="pc-price">${inr(p.price)} ${p.mrp && p.mrp > p.price ? `<span style="color:#8b857a; font-weight:600; font-size:12px; text-decoration:line-through; margin-left:4px">${inr(p.mrp)}</span>`:''}</div>
+          <div class="pc-stock">Stock: ${p.stock ?? 0}</div>
+        </div>
+        <div class="pc-row">
+          <span class="pc-meta">Active</span>
+          <div class="mini-switch ${p.active?'on':''}" data-toggle-prod="${p.id}"><span></span></div>
+        </div>
+        <div class="pc-actions">
+          <button data-edit-prod="${p.id}">Edit</button>
+          <button class="danger" data-del-prod="${p.id}">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('[data-toggle-prod]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const list = getProducts(currentSeller.id);
+      const pr = list.find(x=>x.id===el.dataset.toggleProd);
+      if(pr){ pr.active = !pr.active; saveProducts(currentSeller.id, list); renderProducts(); toast(pr.active ? 'Product active' : 'Product hidden');}
+    });
+  });
+  grid.querySelectorAll('[data-edit-prod]').forEach(b=>{
+    b.addEventListener('click', ()=> openProductSheet(b.dataset.editProd));
+  });
+  grid.querySelectorAll('[data-del-prod]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(!confirm('Delete kar dein?')) return;
+      let list = getProducts(currentSeller.id);
+      list = list.filter(x=>x.id !== b.dataset.delProd);
+      saveProducts(currentSeller.id, list);
+      renderProducts();
+      toast('Product deleted');
+    });
+  });
+}
+
+$('#productSearch').addEventListener('input', renderProducts);
+
+function openProductSheet(editId=null){
+  productEditId = editId;
+  const list = getProducts(currentSeller.id);
+  const p = editId ? list.find(x=>x.id===editId) : null;
+  $('#productSheetTitle').textContent = p ? 'Edit Product' : 'Add New Product';
+  $('#pName').value = p?.name || '';
+  $('#pCategory').value = p?.category || 'Plants';
+  $('#pUnit').value = p?.unit || 'piece';
+  $('#pPrice').value = p?.price ?? '';
+  $('#pMrp').value = p?.mrp ?? '';
+  $('#pStock').value = p?.stock ?? '';
+  $('#pDesc').value = p?.description || '';
+  productActive = p ? !!p.active : true;
+  setProductActiveToggleUI();
+  productPhotoDataUrl = p?.photo || '';
+  if(productPhotoDataUrl){
+    $('#prodPhotoPreview').src = productPhotoDataUrl;
+    $('#prodPhotoPreview').classList.remove('hidden');
+    $('#prodPhotoPlaceholder').classList.add('hidden');
+    $('#prodPhotoBox').classList.add('has-img');
+  } else {
+    $('#prodPhotoPreview').classList.add('hidden');
+    $('#prodPhotoPlaceholder').classList.remove('hidden');
+    $('#prodPhotoBox').classList.remove('has-img');
+  }
+  openSheet('productSheet');
+}
+
+function setProductActiveToggleUI(){
+  $('#pActiveToggle').classList.toggle('on', productActive);
+}
+$('#pActiveToggle').addEventListener('click', ()=>{
+  productActive = !productActive;
+  setProductActiveToggleUI();
+});
+
+$('#btnNewProduct').addEventListener('click', ()=> openProductSheet(null));
+
+$('#prodPhotoBox').addEventListener('click', ()=> $('#prodPhotoInput').click());
+$('#prodPhotoInput').addEventListener('change', e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload = ()=>{
+    productPhotoDataUrl = rd.result;
+    $('#prodPhotoPreview').src = productPhotoDataUrl;
+    $('#prodPhotoPreview').classList.remove('hidden');
+    $('#prodPhotoPlaceholder').classList.add('hidden');
+    $('#prodPhotoBox').classList.add('has-img');
+  };
+  rd.readAsDataURL(f);
+});
+
+$('#btnCancelProduct').addEventListener('click', ()=> closeSheet('productSheet'));
+$('#btnSaveProduct').addEventListener('click', ()=>{
+  const name = $('#pName').value.trim();
+  const price = parseFloat($('#pPrice').value);
+  if(!name || !(price>=0)){
+    toast('Name and Price are required');
+    return;
+  }
+  const list = getProducts(currentSeller.id);
+  const payload = {
+    id: productEditId || uid('p'),
+    name,
+    category: $('#pCategory').value,
+    unit: $('#pUnit').value,
+    price,
+    mrp: parseFloat($('#pMrp').value) || price,
+    stock: parseInt($('#pStock').value || '0',10),
+    description: $('#pDesc').value.trim(),
+    active: productActive,
+    photo: productPhotoDataUrl || `https://picsum.photos/seed/balcony_${Math.floor(Math.random()*9999)}/600/600`
+  };
+  if(productEditId){
+    const i = list.findIndex(x=>x.id===productEditId);
+    if(i>=0) list[i] = payload;
+  } else {
+    list.unshift(payload);
+  }
+  saveProducts(currentSeller.id, list);
+  closeSheet('productSheet');
+  renderProducts();
+  toast('Product saved ✓');
+});
+
+/* ---------- Orders ---------- */
+function statusLabel(s){
+  return {new:'New', confirmed:'Confirmed', packing:'Packing', out:'Out for Delivery', delivered:'Delivered'}[s] || s;
+}
+
+function renderOrders(){
+  const orders = getOrders(currentSeller.id).sort((a,b)=>b.time-a.time);
+  let filtered = orders;
+  if(currentOrderFilter==='new') filtered = orders.filter(o=>o.status==='new');
+  else if(currentOrderFilter==='confirmed') filtered = orders.filter(o=> ['confirmed','packing','out'].includes(o.status));
+  const listEl = $('#ordersList');
+  const emptyEl = $('#ordersEmpty');
+  if(filtered.length===0){
+    listEl.innerHTML='';
+    emptyEl.classList.remove('hidden');
+    return;
+  }
+  emptyEl.classList.add('hidden');
+  listEl.innerHTML = filtered.map(o=>{
+    const itemsHtml = o.items.map(it=> `${esc(it.name)} × ${it.qty}`).join(', ');
+    return `<div class="order-card" data-order-id="${o.id}">
+      <div class="oc-top">
+        <div>
+          <div class="oc-id">${esc(o.id)}</div>
+          <div class="oc-time">${new Date(o.time).toLocaleString('en-IN',{ dateStyle:'medium', timeStyle:'short'})}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="oc-amt">${inr(o.total)}</div>
+          <div style="margin-top:4px"><span class="badge badge-${o.status==='new'?'new': o.status==='delivered'?'delivered':'confirmed'}">${statusLabel(o.status)}</span></div>
+        </div>
+      </div>
+      <div class="oc-cust"><b>${esc(o.buyerName)}</b> • <a href="tel:${o.buyerPhone}" style="color:#0b7a1b; font-weight:700; text-decoration:none">+91 ${o.buyerPhone}</a></div>
+      <div class="oc-items">${esc(itemsHtml)}</div>
+      <div class="oc-addr">📍 ${esc(o.address)}</div>
+      <div class="oc-pay">Payment: ${esc(o.payment)}</div>
+      <div class="oc-actions">
+        ${orderActionsHtml(o)}
+      </div>
+    </div>`;
+  }).join('');
+  // bind actions
+  listEl.querySelectorAll('[data-order-action]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const oid = btn.getAttribute('data-order-id');
+      const act = btn.getAttribute('data-order-action');
+      handleOrderAction(oid, act);
+    });
+  });
+}
+
+function orderActionsHtml(o){
+  const waMsg = encodeURIComponent(`Namaste ${o.buyerName}, aap order ${o.id} Balcony Shop se. Dhanyavaad!`);
+  const waLink = `https://wa.me/91${o.buyerPhone}?text=${waMsg}`;
+  if(o.status==='new'){
+    return `
+      <button class="btn-green btn-block" data-order-action="confirm" data-order-id="${o.id}">Confirm</button>
+      <button class="btn-red-ghost" data-order-action="reject" data-order-id="${o.id}">Reject</button>
+      <a class="btn-whatsapp full-width" href="${waLink}" target="_blank" rel="noopener">WhatsApp Buyer</a>
+    `;
+  }
+  if(o.status==='confirmed'){
+    return `
+      <button class="btn-green btn-block" data-order-action="packing" data-order-id="${o.id}">Packing Start</button>
+      <a class="btn-whatsapp" style="flex:1" href="${waLink}" target="_blank" rel="noopener">WhatsApp</a>
+    `;
+  }
+  if(o.status==='packing'){
+    return `<button class="btn-green full-width" data-order-action="out" data-order-id="${o.id}">Out for Delivery</button>`;
+  }
+  if(o.status==='out'){
+    return `<button class="btn-green full-width" data-order-action="delivered" data-order-id="${o.id}">Mark Delivered</button>`;
+  }
+  // delivered
+  return `<a class="btn-whatsapp full-width" href="${waLink}" target="_blank" rel="noopener">WhatsApp Buyer</a>
+  <div class="text-muted text-sm" style="margin-top:4px">Order complete ✅</div>`;
+}
+
+function handleOrderAction(orderId, action){
+  const orders = getOrders(currentSeller.id);
+  const o = orders.find(x=>x.id===orderId);
+  if(!o) return;
+  if(action==='confirm'){ o.status='confirmed'; toast('Order confirmed ✓'); }
+  else if(action==='reject'){
+    const reason = prompt('Reject reason:', 'Out of stock');
+    if(reason===null) return;
+    o.status='rejected'; o.rejectReason = reason;
+    toast('Order reject kar diya');
+  }
+  else if(action==='packing'){ o.status='packing'; toast('Packing me daal diya'); }
+  else if(action==='out'){ o.status='out'; toast('Out for delivery'); }
+  else if(action==='delivered'){ o.status='delivered'; toast('Delivered!'); }
+  saveOrders(currentSeller.id, orders);
+  renderOrders();
+  renderHome();
+}
+
+// Order tabs
+$('#orderTabs').addEventListener('click', e=>{
+  const btn = e.target.closest('button[data-filter]'); if(!btn) return;
+  currentOrderFilter = btn.dataset.filter;
+  $('#orderTabs').querySelectorAll('button').forEach(b=> b.classList.toggle('active', b===btn));
+  renderOrders();
+});
+
+/* ---------- Profile ---------- */
+function renderProfileForm(){
+  const s = currentSeller;
+  $('#profileAvatar').innerHTML = s.photo ? `<img src="${esc(s.photo)}" alt="">` : initials(s.shopName);
+  $('#profileShopName').textContent = s.shopName;
+  $('#profileShopSub').textContent = `${s.category} • ${s.pincode}`;
+  $('#pfShopName').value = s.shopName;
+  $('#pfOwner').value = s.owner || '';
+  $('#pfCategory').value = s.category || 'Other';
+  $('#pfAddress').value = s.address || '';
+  $('#pfPincode').value = s.pincode || '';
+  $('#pfWhatsapp').value = s.whatsapp || '';
+  $('#pfUpi').value = s.upi || '';
+  profileCodEnabled = !!s.codEnabled;
+  $('#pfCodToggle').classList.toggle('on', profileCodEnabled);
+  $('#pfRadius').value = s.deliveryRadius || 3;
+  $('#pfRadiusVal').textContent = (s.deliveryRadius||3) + ' km';
+}
+
+$('#pfCodToggle').addEventListener('click', ()=>{
+  profileCodEnabled = !profileCodEnabled;
+  $('#pfCodToggle').classList.toggle('on', profileCodEnabled);
+});
+$('#pfRadius').addEventListener('input', e=>{
+  $('#pfRadiusVal').textContent = e.target.value + ' km';
+});
+
+$('#btnSaveProfile').addEventListener('click', ()=>{
+  currentSeller.shopName = $('#pfShopName').value.trim() || currentSeller.shopName;
+  currentSeller.owner = $('#pfOwner').value.trim();
+  currentSeller.category = $('#pfCategory').value;
+  currentSeller.address = $('#pfAddress').value.trim();
+  currentSeller.pincode = $('#pfPincode').value.trim();
+  currentSeller.whatsapp = $('#pfWhatsapp').value.replace(/\D/g,'');
+  currentSeller.upi = $('#pfUpi').value.trim();
+  currentSeller.codEnabled = profileCodEnabled;
+  currentSeller.deliveryRadius = parseInt($('#pfRadius').value,10);
+  persistSeller();
+  renderHeader();
+  renderProfileForm();
+  toast('Profile saved ✓');
+});
+
+$('#btnLogout').addEventListener('click', ()=>{
+  if(!confirm('Logout?')) return;
+  clearSession();
+  currentSeller = null;
+  openAuth();
+  toast('Logout ho gaye');
+});
+
+/* ---------- Navigation ---------- */
+$$('.nav-item').forEach(btn=>{
+  btn.addEventListener('click', ()=> showView(btn.dataset.view));
+});
+$('#btnGoOrders').addEventListener('click', ()=> showView('orders'));
+
+/* ---------- Sheet helpers ---------- */
+function openSheet(id){
+  $('#'+id).classList.add('open');
+  $('#'+id+'Backdrop').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeSheet(id){
+  $('#'+id).classList.remove('open');
+  const bd = document.getElementById(id+'Backdrop');
+  if(bd) bd.classList.remove('open');
+  document.body.style.overflow='';
+}
+$('#productSheetBackdrop').addEventListener('click', ()=> closeSheet('productSheet'));
+
+
+/* ---------- Commission / Order Alert v2 ---------- */
+const LS_SETTINGS = 'balcony_settings';
+const commissionKey = sid => `balcony_commission_${sid}`;
+function getSettings(){ try { return JSON.parse(localStorage.getItem(LS_SETTINGS) || '{}')} catch {return {}} }
+function getCommissionPct(){ const s = getSettings(); return Number(s.commission_pct ?? 1); }
+function getCommissionPayments(sid){ try { return JSON.parse(localStorage.getItem(commissionKey(sid)) || '[]')} catch {return []} }
+function saveCommissionPayments(sid, list){ localStorage.setItem(commissionKey(sid), JSON.stringify(list)) }
+
+// Order ring
+let lastNewOrderIds = new Set();
+let audioCtx = null;
+function beepRing(times=3){
+  try {
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let t = audioCtx.currentTime;
+    for(let i=0;i<times;i++){
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value = i%2===0 ? 880 : 1320;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.25, t+0.05);
+      g.gain.exponentialRampToValueAtTime(0.0001, t+0.22);
+      o.start(t); o.stop(t+0.24);
+      t += 0.28;
+    }
+  } catch(e){}
+}
+function checkNewOrdersAndRing(){
+  if(!currentSeller) return;
+  const orders = getOrders(currentSeller.id);
+  const newIds = orders.filter(o=>o.status==='new').map(o=>o.id);
+  const hadNew = lastNewOrderIds.size > 0;
+  const found = newIds.find(id => !lastNewOrderIds.has(id));
+  lastNewOrderIds = new Set(newIds);
+  if(found && hadNew !== false){
+    beepRing(4);
+    if(navigator.vibrate) navigator.vibrate([200,100,200,100,300]);
+    toast('🔔 Naya order aaya!');
+  }
+  // visual ring
+  setTimeout(()=>{
+    document.querySelectorAll('.order-card').forEach(card=>{
+      const oid = card.getAttribute('data-order-id');
+      if(newIds.includes(oid)) card.classList.add('ringing');
+    });
+  }, 50);
+}
+// poll every 4s (for buyer placed orders in same browser / multi-tab)
+setInterval(checkNewOrdersAndRing, 4000);
+
+// Patch renderOrders to trigger ring check
+const _renderOrdersOrig = renderOrders;
+renderOrders = function(){ _renderOrdersOrig(); checkNewOrdersAndRing(); };
+
+// Reject with reason sheet
+let pendingRejectOrderId = null;
+function openRejectSheet(orderId){
+  pendingRejectOrderId = orderId;
+  document.getElementById('customReasonWrap').classList.add('hidden');
+  document.getElementById('customReasonInput').value = '';
+  document.getElementById('rejectSheet').classList.add('open');
+  document.getElementById('rejectSheetBackdrop').classList.add('open');
+}
+function closeRejectSheet(){
+  document.getElementById('rejectSheet').classList.remove('open');
+  document.getElementById('rejectSheetBackdrop').classList.remove('open');
+  pendingRejectOrderId = null;
+}
+document.addEventListener('click', e=>{
+  const b = e.target.closest('#rejectSheet .reason-btn');
+  if(!b) return;
+  const reason = b.dataset.reason;
+  if(reason === 'custom'){
+    document.getElementById('customReasonWrap').classList.remove('hidden');
+    document.getElementById('customReasonInput').focus();
+    return;
+  }
+  doRejectOrder(reason);
+});
+document.getElementById('btnSubmitCustomReason')?.addEventListener('click', ()=>{
+  const r = document.getElementById('customReasonInput').value.trim() || 'Custom';
+  doRejectOrder(r);
+});
+document.getElementById('btnCancelReject')?.addEventListener('click', closeRejectSheet);
+document.getElementById('rejectSheetBackdrop')?.addEventListener('click', closeRejectSheet);
+
+function doRejectOrder(reason){
+  if(!pendingRejectOrderId) return;
+  const orders = getOrders(currentSeller.id);
+  const o = orders.find(x=>x.id===pendingRejectOrderId);
+  if(o){ o.status='rejected'; o.rejectReason = reason; saveOrders(currentSeller.id, orders); toast('Order reject: '+reason); renderOrders(); renderHome(); }
+  closeRejectSheet();
+}
+
+// Override handleOrderAction reject to use sheet
+const _handleOrderActionOrig = handleOrderAction;
+handleOrderAction = function(orderId, action){
+  if(action === 'reject'){ openRejectSheet(orderId); return; }
+  return _handleOrderActionOrig(orderId, action);
+};
+
+// Commission Pay
+function renderCommission(){
+  if(!currentSeller) return;
+  const pct = getCommissionPct();
+  const orders = getOrders(currentSeller.id);
+  const delivered = orders.filter(o=>o.status==='delivered');
+  const sales = delivered.reduce((s,o)=>s+Number(o.total||0),0);
+  const due = Math.round(sales * pct / 100);
+  const pays = getCommissionPayments(currentSeller.id);
+  const paid = pays.reduce((s,p)=>s+Number(p.amount||0),0);
+  const balance = Math.max(0, due - paid);
+  document.getElementById('cmRate').textContent = pct + '%';
+  document.getElementById('cmSales').textContent = inr(sales);
+  document.getElementById('cmDue').textContent = inr(due);
+  document.getElementById('cmPaid').textContent = inr(paid);
+  document.getElementById('cmBalance').textContent = inr(balance);
+  const upiId = '7879743129@ibl';
+  const payLink = document.getElementById('upiPayLink');
+  const amt = balance > 0 ? balance : 1;
+  payLink.href = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent('Balcony Admin')}&am=${amt}&cu=INR&tn=${encodeURIComponent('Balcony Commission')}`;
+  const hist = pays.length ? pays.slice(-3).reverse().map(p=>`₹${p.amount} – ${p.utr||'pending'} – ${new Date(p.time).toLocaleDateString('en-IN')}`).join('<br>') : 'No payments yet';
+  document.getElementById('payHistory').innerHTML = hist;
+}
+document.getElementById('btnMarkPaid')?.addEventListener('click', ()=>{
+  const amtStr = prompt('Kitna amount pay kiya? (₹)', document.getElementById('cmBalance').textContent.replace(/[^0-9]/g,''));
+  if(!amtStr) return;
+  const utr = prompt('UTR / Transaction ID daalein:');
+  if(utr === null) return;
+  const pays = getCommissionPayments(currentSeller.id);
+  pays.push({amount: Number(amtStr)||0, utr: utr||'', time: Date.now(), status:'submitted'});
+  saveCommissionPayments(currentSeller.id, pays);
+  toast('Payment submitted – Admin verify karega');
+  renderCommission();
+});
+
+// Patch showView to include commission
+const _showViewOrig = showView;
+showView = function(view){
+  ['home','products','orders','commission','profile'].forEach(v=>{
+    const el = document.getElementById('view-'+v);
+    if(el) el.hidden = v !== view;
+  });
+  document.querySelectorAll('.nav-item').forEach(b=>{
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  window.scrollTo({top:0, behavior:'auto'});
+  if(view==='products') renderProducts();
+  if(view==='orders') renderOrders();
+  if(view==='home') renderHome();
+  if(view==='profile') renderProfileForm();
+  if(view==='commission') renderCommission();
+};
+
+// Update home stats to show commission due
+const _renderHomeOrig = renderHome;
+renderHome = function(){
+  _renderHomeOrig();
+  // add commission due hint if element exists
+  const pct = getCommissionPct();
+  const orders = currentSeller ? getOrders(currentSeller.id) : [];
+  const sales = orders.filter(o=>o.status==='delivered').reduce((s,o)=>s+Number(o.total||0),0);
+  const due = Math.round(sales * pct / 100);
+  const el = document.getElementById('statEarning');
+  if(el && due>0){ el.parentElement.querySelector('.stat-sub').textContent = `Commission due: ₹${due} @ ${pct}%`; }
+};
+
+// unlock audio on first tap
+document.addEventListener('click', ()=>{ if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)()}catch(e){}} }, {once:true});
+
+
+/* ---------- Start ---------- */
+checkSession();
+
+// PWA install nudge (optional, harmless)
+if('serviceWorker' in navigator){
+  // no external sw in single file, skip
+}
+
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+
+<!-- ===== Balcony Supabase Backend Bridge – v2.1 fixed ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+try {
+var SUPABASE_URL = "https://myxmmgkhfdwkmrzzwuet.supabase.co";
+var SUPABASE_ANON = "sb_publishable_U7qwO2GisgBWwmSmdsvV-A_3YLil9hD";
+var WHATSAPP_WEBHOOK = "";
+
+var supa = null;
+var balcony_supabase_ready = false;
+try {
+  if (window.supabase && SUPABASE_URL.indexOf('YOUR-PROJECT') === -1) {
+    supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    balcony_supabase_ready = true;
+  }
+} catch(e){ console.warn('Supabase init failed, running local-only', e); }
+
+function sellerToCloud(s){ return {
+  id: s.id, phone: s.phone, shop_name: s.shopName, owner: s.owner,
+  category: s.category, address: s.address, pincode: s.pincode,
+  whatsapp: s.whatsapp, upi: s.upi, photo: s.photo || null,
+  is_open: !!s.isOpen, cod_enabled: !!s.codEnabled,
+  delivery_radius: s.deliveryRadius || 3
+};}
+function productToCloud(p, seller_id){ return {
+  id: p.id, seller_id: seller_id,
+  name: p.name, category: p.category, unit: p.unit,
+  price: p.price, mrp: p.mrp, stock: p.stock,
+  description: p.description, active: !!p.active,
+  photo: p.photo
+};}
+function orderToCloud(o, seller_id){ return {
+  id: o.id, seller_id: seller_id,
+  buyer_name: o.buyerName, buyer_phone: o.buyerPhone,
+  items: o.items, total: o.total,
+  address: o.address, payment: o.payment,
+  status: o.status, reject_reason: o.rejectReason || null,
+  time: o.time,
+  delivery_boy_name: o.deliveryBoyName || null,
+  delivery_boy_phone: o.deliveryBoyPhone || null
+};}
+function orderFromCloud(r){ return {
+  id: r.id, buyerName: r.buyer_name, buyerPhone: r.buyer_phone,
+  items: r.items, total: Number(r.total),
+  address: r.address, payment: r.payment,
+  status: r.status, rejectReason: r.reject_reason,
+  time: r.time || Date.now(),
+  deliveryBoyName: r.delivery_boy_name,
+  deliveryBoyPhone: r.delivery_boy_phone
+};}
+
+/* ---- safe wrappers ---- */
+function wrapFn(name, wrapper){
+  var orig = window[name];
+  if(typeof orig !== 'function') return;
+  window[name] = function(){ 
+    try { return wrapper.apply(this, [orig].concat([].slice.call(arguments))); }
+    catch(e){ console.warn(name+' bridge error', e); return orig.apply(this, arguments); }
+  };
+}
+
+// saveProducts
+if(typeof saveProducts === 'function'){
+  var _saveProducts_orig = saveProducts;
+  saveProducts = function(sid, list){
+    var r = _saveProducts_orig.apply(this, arguments);
+    if(balcony_supabase_ready && supa && list && list.length){
+      try{
+        var rows = list.map(function(p){ return productToCloud(p, sid); });
+        supa.from('products').upsert(rows, {onConflict:'id'}).then(function(){},function(){});
+      }catch(e){}
+    }
+    return r;
+  };
+}
+// saveOrders
+if(typeof saveOrders === 'function'){
+  var _saveOrders_orig = saveOrders;
+  saveOrders = function(sid, list){
+    var r = _saveOrders_orig.apply(this, arguments);
+    if(balcony_supabase_ready && supa && list && list.length){
+      try{
+        var rows = list.map(function(o){ return orderToCloud(o, sid); });
+        supa.from('orders').upsert(rows, {onConflict:'id'}).then(function(){},function(){});
+      }catch(e){}
+    }
+    return r;
+  };
+}
+// saveSellers
+if(typeof saveSellers === 'function'){
+  var _saveSellers_orig = saveSellers;
+  saveSellers = function(list){
+    var r = _saveSellers_orig.apply(this, arguments);
+    if(balcony_supabase_ready && supa && list){
+      try{
+        var rows = list.map(sellerToCloud);
+        supa.from('sellers').upsert(rows, {onConflict:'id'}).then(function(){},function(){});
+      }catch(e){}
+    }
+    return r;
+  };
+}
+
+/* ---- cloud pull ---- */
+async function syncFromCloud(seller_id){
+  if(!balcony_supabase_ready || !supa) return;
+  try{
+    var pRes = await supa.from('products').select('*').eq('seller_id', seller_id);
+    var oRes = await supa.from('orders').select('*').eq('seller_id', seller_id);
+    if(pRes.data && pRes.data.length){
+      var local = pRes.data.map(function(r){ return {
+        id: r.id, name: r.name, category: r.category, unit: r.unit,
+        price: Number(r.price), mrp: Number(r.mrp),
+        stock: r.stock, description: r.description,
+        active: r.active, photo: r.photo
+      };});
+      if(typeof saveProducts === 'function'){
+        // call original directly to avoid loop
+        localStorage.setItem('balcony_products_'+seller_id, JSON.stringify(local));
+      }
+    }
+    if(oRes.data && oRes.data.length){
+      var localOrders = oRes.data.map(orderFromCloud);
+      localStorage.setItem('balcony_orders_'+seller_id, JSON.stringify(localOrders));
+    }
+    if(typeof renderProducts === 'function') renderProducts();
+    if(typeof renderOrders === 'function') renderOrders();
+    if(typeof renderHome === 'function') renderHome();
+  }catch(e){}
+}
+
+/* ---- Realtime ---- */
+var balcony_rt_channel = null;
+function subscribeOrdersRealtime(seller_id){
+  if(!balcony_supabase_ready || !supa || balcony_rt_channel) return;
+  try{
+    balcony_rt_channel = supa.channel('orders-rt-'+seller_id)
+      .on('postgres_changes', {event:'INSERT', schema:'public', table:'orders', filter:'seller_id=eq.'+seller_id}, function(payload){
+        try{
+          var o = orderFromCloud(payload.new);
+          var orders = (typeof getOrders === 'function') ? getOrders(seller_id) : [];
+          if(!orders.find(function(x){return x.id===o.id})){
+            orders.unshift(o);
+            localStorage.setItem('balcony_orders_'+seller_id, JSON.stringify(orders));
+            if(typeof beepRing === 'function') try{beepRing(4);}catch(e){}
+            if(navigator.vibrate) navigator.vibrate([200,100,200,100,300]);
+            try{
+              var u = new SpeechSynthesisUtterance('Naya order aaya hai, rupaye ' + o.total);
+              u.lang='hi-IN'; speechSynthesis.speak(u);
+            }catch(e){}
+            if(typeof toast === 'function') toast('🔔 Naya order aaya!');
+            if(typeof renderOrders === 'function') renderOrders();
+            if(typeof renderHome === 'function') renderHome();
+            if(WHATSAPP_WEBHOOK){
+              fetch(WHATSAPP_WEBHOOK, {method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({phone: window.currentSeller?.whatsapp || window.currentSeller?.phone, order_code:o.id, total:o.total})
+              }).catch(function(){});
+            }
+          }
+        }catch(e){}
+      }).subscribe();
+  }catch(e){}
+}
+
+/* ---- hook openApp safely ---- */
+if(typeof openApp === 'function'){
+  var _openApp_orig = openApp;
+  openApp = function(){
+    var r = _openApp_orig.apply(this, arguments);
+    var seller = arguments[0];
+    if(seller && seller.id){
+      syncFromCloud(seller.id);
+      subscribeOrdersRealtime(seller.id);
+    }
+    return r;
+  };
+}
+
+/* ---- delivery boy prompt – keep original flow intact ---- */
+if(typeof handleOrderAction === 'function'){
+  var _handleOrderAction_orig = handleOrderAction;
+  handleOrderAction = function(orderId, action){
+    try{
+      if(action === 'out' && window.currentSeller){
+        var name = prompt('Delivery boy naam?');
+        if(name === null) return;
+        var phone = prompt('Delivery boy phone?') || '';
+        var orders = getOrders(currentSeller.id);
+        var o = orders.find(function(x){return x.id===orderId});
+        if(o){
+          o.status='out';
+          o.deliveryBoyName = name;
+          o.deliveryBoyPhone = phone;
+          saveOrders(currentSeller.id, orders);
+          if(typeof toast === 'function') toast('Out for delivery');
+          if(typeof renderOrders === 'function') renderOrders();
+          if(typeof renderHome === 'function') renderHome();
+          if(WHATSAPP_WEBHOOK){
+            fetch(WHATSAPP_WEBHOOK, {method:'POST', headers:{'Content-Type':'application/json'},
+              body: JSON.stringify({type:'tracking', order_id:orderId, buyer_phone:o.buyerPhone, boy_name:name, boy_phone:phone})
+            }).catch(function(){});
+          }
+          return;
+        }
+      }
+      // stock atomic on confirm
+      if(action === 'confirm' && balcony_supabase_ready && supa && window.currentSeller){
+        try{
+          var orders = getOrders(currentSeller.id);
+          var o = orders.find(function(x){return x.id===orderId});
+          if(o && o.items){
+            o.items.forEach(function(it){
+              var plist = getProducts(currentSeller.id);
+              var p = plist.find(function(pp){ return pp.name === it.name });
+              if(p){ supa.rpc('decrement_stock', {p_product_id: p.id, p_qty: it.qty}).then(function(){},function(){}); }
+            });
+          }
+        }catch(e){}
+      }
+    }catch(e){}
+    return _handleOrderAction_orig.apply(this, arguments);
+  };
+}
+
+/* ---- beepRing with Hindi TTS, preserve original ---- */
+if(typeof beepRing === 'function'){
+  var _beepRing_orig = beepRing;
+  beepRing = function(){
+    var r = _beepRing_orig.apply(this, arguments);
+    try{
+      var u = new SpeechSynthesisUtterance('Naya order aaya hai');
+      u.lang='hi-IN'; speechSynthesis.speak(u);
+    }catch(e){}
+    return r;
+  };
+}
+
+/* ---- status badge ---- */
+document.addEventListener('DOMContentLoaded', function(){
+  var hdr = document.querySelector('.app-header') || document.querySelector('header');
+  if(hdr && !document.getElementById('backendStatus')){
+    var b = document.createElement('div');
+    b.id='backendStatus';
+    b.style.cssText='font-size:11px;color:#4b453b;margin-top:4px';
+    b.textContent = balcony_supabase_ready ? 'Backend: Supabase Cloud ✓' : 'Backend: Local only – Supabase keys daalo';
+    hdr.appendChild(b);
+  }
+});
+
+console.log('Balcony Backend Bridge v2.1 loaded – Supabase ready:', balcony_supabase_ready);
+} catch(e){ console.warn('Backend bridge disabled', e); }
+})();
+</script>
+<!-- ===== /Backend Bridge ===== -->
+
+</body>
+</html>
