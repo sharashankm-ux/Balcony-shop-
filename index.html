@@ -1,0 +1,506 @@
+<html lang="hi"><head>
+<!-- Playables SDK -->
+<script>// Playables SDK v1.0.0
+// Game lifecycle bridge: rAF-based game-ready detection + event communication
+(function() {
+  'use strict';
+
+  // Idempotency: skip if already initialized (e.g., server-side injection
+  // followed by client-side inject-javascript via the Bloks webview component).
+  if (window.playablesSDK) return;
+
+  var HANDLER_NAME = 'playablesGameEventHandler';
+  var ANDROID_BRIDGE_NAME = '_MetaPlayablesBridge';
+  var RAF_FRAME_THRESHOLD = 3;
+
+  var gameReadySent = false;
+  var firstInteractionSent = false;
+  var errorSent = false;
+  var frameCount = 0;
+  var originalRAF = window.requestAnimationFrame;
+
+  // --- Transport Layer ---
+
+  function hasIOSBridge() {
+    return !!(window.webkit &&
+              window.webkit.messageHandlers &&
+              window.webkit.messageHandlers[HANDLER_NAME]);
+  }
+
+  function hasAndroidBridge() {
+    return !!(window[ANDROID_BRIDGE_NAME] &&
+              typeof window[ANDROID_BRIDGE_NAME].postEvent === 'function');
+  }
+
+  function isInIframe() {
+    return !!(window.parent && window.parent !== window);
+  }
+
+  function sendEvent(eventName, payload) {
+    var message = {
+      type: eventName,
+      payload: payload || {},
+      timestamp: Date.now()
+    };
+
+    if (hasIOSBridge()) {
+      try {
+        window.webkit.messageHandlers[HANDLER_NAME].postMessage(message);
+      } catch (e) { /* ignore */ }
+      return;
+    }
+
+    if (hasAndroidBridge()) {
+    try {
+      var p = payload || {};
+      p.__secureToken = window.__fbAndroidBridgeAuthToken || '';
+      p.timestamp = message.timestamp;
+      window[ANDROID_BRIDGE_NAME].postEvent(
+        eventName,
+        JSON.stringify(p)
+      );
+    } catch (e) { /* ignore */ }
+    return;
+  }
+
+    if (isInIframe()) {
+      try {
+        window.parent.postMessage(message, '*');
+      } catch (e) { /* ignore */ }
+      return;
+    }
+  }
+
+  // --- rAF Game-Ready Detection ---
+
+  function onFrame() {
+    if (gameReadySent) return;
+
+    frameCount++;
+    if (frameCount >= RAF_FRAME_THRESHOLD) {
+      gameReadySent = true;
+      sendEvent('game_ready', {
+        frame_count: frameCount,
+        detected_at: Date.now()
+      });
+      return;
+    }
+
+    originalRAF.call(window, onFrame);
+  }
+
+  if (originalRAF) {
+    window.requestAnimationFrame = function(callback) {
+      if (!gameReadySent) {
+        return originalRAF.call(window, function(timestamp) {
+          frameCount++;
+          if (frameCount >= RAF_FRAME_THRESHOLD && !gameReadySent) {
+            gameReadySent = true;
+            sendEvent('game_ready', {
+              frame_count: frameCount,
+              detected_at: Date.now()
+            });
+          }
+          callback(timestamp);
+        });
+      }
+      return originalRAF.call(window, callback);
+    };
+  }
+
+  // --- First User Interaction Detection ---
+
+  function setupFirstInteractionDetection() {
+    var events = ['touchstart', 'mousedown', 'keydown'];
+
+    function onFirstInteraction() {
+      if (firstInteractionSent) return;
+      firstInteractionSent = true;
+      sendEvent('user_interaction_start', null);
+
+      for (var i = 0; i < events.length; i++) {
+        document.removeEventListener(events[i], onFirstInteraction, true);
+      }
+    }
+
+    for (var i = 0; i < events.length; i++) {
+      document.addEventListener(events[i], onFirstInteraction, true);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupFirstInteractionDetection);
+  } else {
+    setupFirstInteractionDetection();
+  }
+
+  // --- Auto Error Capture ---
+
+  window.addEventListener('error', function(event) {
+    if (errorSent) return;
+    errorSent = true;
+    sendEvent('error', {
+      message: event.message || 'Unknown error',
+      source: event.filename || '',
+      lineno: event.lineno || 0,
+      colno: event.colno || 0,
+      auto_captured: true
+    });
+  });
+
+  window.addEventListener('unhandledrejection', function(event) {
+    if (errorSent) return;
+    errorSent = true;
+    var reason = event.reason;
+    sendEvent('error', {
+      message: (reason instanceof Error) ? reason.message : String(reason),
+      type: 'unhandled_promise_rejection',
+      auto_captured: true
+    });
+  });
+
+  // --- Public API ---
+
+  window.playablesSDK = {
+    complete: function(score) {
+      sendEvent('game_ended', {
+        score: score,
+        completed: true
+      });
+    },
+
+    error: function(message) {
+      if (errorSent) return;
+      errorSent = true;
+      sendEvent('error', {
+        message: message || 'Unknown error',
+        auto_captured: false
+      });
+    },
+
+    sendEvent: function(eventName, payload) {
+      if (!eventName || typeof eventName !== 'string') return;
+      sendEvent(eventName, payload);
+    }
+  };
+
+  // Kick off rAF detection in case no game code calls rAF immediately
+  if (originalRAF) {
+    originalRAF.call(window, onFrame);
+  }
+})();</script>
+<!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balcony Shop — बालकनी शॉप</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f6f4ef;--card:#ffffff;--ink:#19160f;--muted:#6f6a60;--line:#e6e2d9;--green:#0b7a1b;--green-soft:#e8f8e8;--input:#f9f7f2;--shadow:0 6px 20px rgba(25,22,15,.06)}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,"Noto Sans Devanagari","Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding:16px 14px 96px}
+h2{font-size:28px;line-height:1.25;font-weight:800}
+h3{font-size:20px;font-weight:800}
+h4{font-size:17px;font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.input{width:100%;background:var(--input);border:1px solid var(--line);border-radius:12px;padding:13px 14px;font-size:16px;outline:none;transition:.15s}
+.input:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.22)}
+.btn{background:var(--green);color:#fff;border:none;border-radius:12px;padding:13px 16px;font-weight:700;width:100%;cursor:pointer;min-height:48px;transition:.15s}
+.btn:active{transform:translateY(1px)}
+.btn-ghost{background:#f4f1e9;color:var(--ink)}
+.hidden{display:none!important}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shop{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line);cursor:pointer;transition:.15s;box-shadow:var(--shadow)}
+.shop:hover{transform:translateY(-1px)}
+.badge{font-size:11px;background:#f4f1e9;padding:4px 9px;border-radius:999px;color:#3a352a}
+.product-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+.product-name{font-weight:700;font-size:14px}
+.product-price{color:#555;margin:5px 0;font-size:13px}
+.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px 12px;max-width:480px;margin:0 auto;box-shadow:0 -4px 16px rgba(0,0,0,.05)}
+.muted{color:var(--muted);font-size:13px}
+.chip{font-size:11px;background:var(--green-soft);color:#0b5a14;padding:3px 8px;border-radius:999px;font-weight:700}
+.locate-btn{padding:0 12px;border-radius:10px;border:1px solid #cdeccd;background:var(--green-soft);color:#0b7a1b;font-weight:700;white-space:nowrap;cursor:pointer}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async=""></script></head>
+<body>
+<div class="app" style="padding:16px">
+
+<!-- AUTH -->
+<div id="view-auth">
+  <div style="margin:8px 0 14px"><div style="font-size:12px;color:#6f6a60;letter-spacing:.04em;text-transform:uppercase">Bhopal • MP</div><h2>Balcony Shop<br><span style="font-size:16px;color:#666;font-weight:600">बालकनी शॉप</span></h2></div>
+  <p style="color:#555;margin-bottom:14px">अपनी गली-मोहल्ले की दुकानों से सीधे ऑर्डर करें</p>
+  <div class="card">
+    <div id="auth-step-phone">
+      <label style="font-size:13px;color:#555">मोबाइल नंबर</label>
+      <input id="auth-phone" class="input" type="tel" placeholder="9000000000" value="9000000000" inputmode="numeric" maxlength="10">
+      <div style="font-size:12px;color:#777;margin:6px 0">डेमो: 9000000000 / OTP: 1234</div>
+      <button id="btn-send-otp" class="btn">OTP भेजें</button>
+      <button id="btn-guest" class="btn btn-ghost" style="margin-top: 8px; outline: rgb(11, 122, 27) solid 3px;">👉 बिना लॉगिन जारी रखें – Tap</button>
+    </div>
+    <div id="auth-step-otp" class="hidden">
+      <div style="font-size:13px;color:#555">OTP भेजा गया: <b id="auth-phone-label"></b></div>
+      <input id="auth-otp" class="input" type="tel" placeholder="1234" inputmode="numeric" maxlength="4" style="margin:8px 0">
+      <button id="btn-verify-otp" class="btn">Verify / प्रवेश करें</button>
+      <button id="btn-back-phone" class="btn btn-ghost" style="margin-top:8px">← नंबर बदलें</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="view-app" class="hidden">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0">
+    <h3>नज़दीकी दुकानें</h3>
+    <span id="user-phone" style="font-size:12px;color:#666"></span>
+  </div>
+  <div id="cat-filter" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px"><button class="chip cat-chip" data-cat="all" style="background:#0b7a1b;color:#fff">सभी</button><button class="chip cat-chip" data-cat="किराना">🛒 किराना</button><button class="chip cat-chip" data-cat="सब्ज़ी-फल">🥬 सब्ज़ी</button><button class="chip cat-chip" data-cat="डेयरी">🥛 डेयरी</button></div><div id="seller-list" style="display:flex;flex-direction:column;gap:8px"></div>
+  <div id="product-area" class="hidden" style="margin-top:12px">
+    <button id="btn-back-sellers" class="btn btn-ghost" style="width:auto;padding:8px 12px;margin-bottom:8px">← दुकानें</button>
+    <h4 id="product-seller-name"></h4>
+    <div id="product-grid" class="grid2" style="margin-top:8px"></div>
+  </div>
+  <div id="checkout-area" class="hidden" style="margin-top:12px">
+    <h4>Checkout / भुगतान</h4>
+    <div class="card" style="margin-top:8px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <input id="cx-name" class="input" placeholder="आपका नाम *">
+        <input id="cx-phone" class="input" placeholder="मोबाइल *">
+        <input id="cx-gali" class="input" placeholder="गली / मोहल्ला *" style="grid-column:1/-1">
+        <div style="grid-column:1/-1;display:flex;gap:8px">
+          <input id="cx-landmark" class="input" placeholder="लैंडमार्क / नज़दीकी निशान *" style="flex:1">
+          <button type="button" id="btn-locate" class="locate-btn">📍 लोकेशन</button>
+        </div>
+      </div>
+      <div style="margin:10px 0;font-size:13px">
+        <label><input type="radio" name="pay" value="cod" checked=""> COD – कैश ऑन डिलीवरी</label><br>
+        <label><input type="radio" name="pay" value="upi"> UPI</label>
+        <div id="upi-box" class="hidden" style="margin-top:8px;background:#f9f7f2;padding:10px;border-radius:10px;font-size:13px;border:1px dashed #d8d3c6">
+          UPI ID: <b id="upi-id">-</b>
+          <button id="btn-copy-upi" type="button" style="margin-left:8px;font-size:12px">Copy</button>
+        </div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;margin:8px 0">
+        <span>कुल</span><span id="cx-total">₹0</span>
+      </div>
+      <button id="btn-place-order" class="btn">ऑर्डर करें</button>
+      <div id="order-msg" style="font-size:13px;color:#0b7a1b;margin-top:6px"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="bottom" id="cart-bar" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div><b id="cart-count">0</b> आइटम • <b id="cart-total">₹0</b></div>
+    <button id="btn-checkout" class="btn" style="width:auto;padding:10px 16px">Checkout</button>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://myxmmgkhfdwkmrzzwuet.supabase.co";
+   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15eG1tZ2toZmR3a21yenp3dWV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MTQyODgsImV4cCI6MjA5ODM5MDI4OH0.F1JfQcZnecgurrMmCk-HQ3qThI7bHTwMueLneZ8MaCg";
+let supabase = null, supabaseReady = false;
+(function loadSB(){
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  s.async=true;
+  s.onload=function(){ try{ supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); supabaseReady=true; loadSellersFromSB(); }catch(e){} };
+  s.onerror=function(){};
+  document.head.appendChild(s);
+})();
+
+let SELLERS = [
+  {id:'ajay_001', name:'Ajay – Balcony Shop', cat:'सब्ज़ी-फल', cat_icon:'🛒', photo:'', upi:'ajay@upi', phone:'919000000000', whatsapp:'919000000000', area:'Bhopal'},
+  {id:'s1', name:'Sharma Kirana – Arera Colony', cat:'किराना', cat_icon:'🛒', photo:'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=200&h=200&fit=crop&q=60', upi:'sharmakirana@upi', phone:'919876500001', whatsapp:'919876500001', area:'Arera Colony'},
+  {id:'s2', name:'Taza Sabzi – MP Nagar', cat:'सब्ज़ी-फल', cat_icon:'🥬', photo:'https://images.unsplash.com/photo-1542838132-92c533004ffe?w=200&h=200&fit=crop&q=60', upi:'tazasabzibpl@upi', phone:'919876500002', whatsapp:'919876500002', area:'MP Nagar'},
+  {id:'s3', name:'Narmada Dairy – Kolar Road', cat:'डेयरी / बेकरी', cat_icon:'🥛', photo:'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200&h=200&fit=crop&q=60', upi:'narmadadairy@upi', phone:'919876500003', whatsapp:'919876500003', area:'Kolar Road'},
+  {id:'s4', name:'Apna General Store – Habibganj', cat:'किराना', cat_icon:'🛒', photo:'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=200&h=200&fit=crop&q=60', upi:'apnastore@upi', phone:'919876500004', whatsapp:'919876500004', area:'Habibganj'}
+];
+let PRODUCTS = {
+  s1: [{id:'a1',n:'आटा 5kg',p:220},{id:'a2',n:'चावल 1kg',p:68},{id:'a3',n:'दाल तूर 1kg',p:145},{id:'a4',n:'तेल 1L',p:138}],
+  s2: [{id:'b1',n:'टमाटर 1kg',p:35},{id:'b2',n:'आलू 1kg',p:28},{id:'b3',n:'प्याज 1kg',p:32},{id:'b4',n:'केला दर्जन',p:55}],
+  s3: [{id:'c1',n:'दूध 1L',p:58},{id:'c2',n:'दही 500g',p:45},{id:'c3',n:'ब्रेड',p:35},{id:'c4',n:'अंडे 6',p:48}],
+  ajay_001: [{id:'aj1',n:'powder',p:120},{id:'aj2',n:'Tulsi Plant',p:45},{id:'aj3',n:'Money Plant',p:80},{id:'aj4',n:'Rose Plant',p:60}]
+};
+let cart=[], currentSeller=null;
+
+function $(id){return document.getElementById(id)}
+function showApp(phone){
+  $('view-auth').classList.add('hidden');
+  $('view-app').classList.remove('hidden');
+  $('user-phone').textContent = phone? '+91 '+phone : 'Guest';
+  renderSellers();
+}
+function renderSellers(){
+  const el=$('seller-list'); el.innerHTML='';
+  SELLERS.forEach(s=>{
+    const d=document.createElement('div'); d.className='shop';
+    const photo = s.photo? `<img src="${s.photo}" alt="" style="width:52px;height:52px;border-radius:12px;object-fit:cover;background:#f4f1e9" loading="lazy" onerror="this.style.display='none'">` : `<div style="font-size:22px">${s.cat_icon||'🛒'}</div>`;
+    d.innerHTML = `${photo}<div style="flex:1"><b>${s.name}</b><br><span class="badge">${s.cat_icon||''} ${s.cat}</span></div><div style="font-size:11px;color:#6f6a60">खुला ✓</div>`;
+    d.onclick=()=>openSeller(s.id);
+    el.appendChild(d);
+  });
+}
+function openSeller(id){
+  currentSeller = SELLERS.find(x=>x.id===id);
+  $('product-seller-name').textContent = currentSeller.name;
+  const grid=$('product-grid'); grid.innerHTML='';
+  (PRODUCTS[id]||[]).forEach(p=>{
+    const c=document.createElement('div'); c.className='product-card';
+    c.innerHTML='<div class="product-name">'+p.n+'</div><div class="product-price">₹'+p.p+'</div><button class="btn" style="padding:8px">Add</button>';
+    c.querySelector('button').onclick=()=>addToCart(p);
+    grid.appendChild(c);
+  });
+  $('product-area').classList.remove('hidden');
+  $('checkout-area').classList.add('hidden');
+  window.scrollTo(0,0);
+}
+function addToCart(p){
+    console.log('Product:', p); //  Ye check karega price kya aa raha hai
+    const f=cart.find(x=>x.id===p.id); 
+    if(f) f.q++; 
+    else cart.push({
+        id:p.id, 
+        q:1, 
+        price: Number(p.price ?? p.p ?? p.rate ?? 0), //  Ab 3 naam check karega
+        name:p.n || p.name //  Naam bhi dono se lega
+    }); 
+    updateCart();
+}
+
+function updateCart(){
+  const n=cart.reduce((a,b)=>a+b.q,0), t=cart.reduce((a,b)=>a+b.q*Number(b.price || 0),0);
+  $('cart-count').textContent=n; 
+  $('cart-total').textContent=''+t;
+  $('cart-bar').style.display = n>0 ? '' : 'none';
+  $('cx-total').textContent=''+t;
+}
+
+$('btn-checkout').onclick=()=>{
+  if(!cart.length){ alert('Cart  '); return; }
+  $('product-area').classList.add('hidden');
+  $('checkout-area').classList.remove('hidden');
+  updateCart(); //  Important: Ye line checkout pe total fix karegi
+  const upi = currentSeller? currentSeller.upi : 'balcony@upi';
+  $('upi-id').textContent = upi;
+  window.scrollTo(0,0);
+};
+document.addEventListener('change', e=>{
+  if(e.target.name==='pay'){
+    $('upi-box').classList.toggle('hidden', e.target.value!=='upi');
+  }
+});
+$('btn-copy-upi').onclick=()=>{ navigator.clipboard.writeText($('upi-id').textContent).catch(()=>{}); alert('UPI copied'); };
+
+$('btn-place-order').onclick=async ()=>{
+  if(!cart.length){ alert('Cart खाली है – पहले कोई प्रोडक्ट Add करें'); return; }
+  const name=$('cx-name').value.trim(), phone=$('cx-phone').value.trim(), gali=$('cx-gali').value.trim(), landmark=$('cx-landmark').value.trim();
+  if(!name||phone.length<10||!gali||!landmark){ alert('सभी * फ़ील्ड भरें – नाम, मोबाइल, गली, लैंडमार्क'); return; }
+  const pay = document.querySelector('input[name="pay"]:checked').value;
+  const total = cart.reduce((a,b)=>a+b.price*b.q,0); 
+  const order = {customer_name:name, customer_phone:phone, address:gali, landmark:landmark, payment_method:pay, total:total, items:cart, seller_id: currentSeller?currentSeller.id:null, created_at:new Date().toISOString()};
+  let saved=false;
+  if(supabaseReady && supabase){
+    try{ const {error} = await supabase.from('orders').insert([order]); if(!error) saved=true; }catch(e){}
+  }
+  if(!saved){ const arr=JSON.parse(localStorage.getItem('balcony_orders')||'[]'); arr.push(order); localStorage.setItem('balcony_orders', JSON.stringify(arr)); }
+  $('order-msg').textContent = saved? 'ऑर्डर Supabase में सेव हो गया ✓' : 'ऑर्डर लोकल सेव हो गया ✓';
+  cart = []; // Reset cart after order
+  updateCart(); // Update UI
+  try{
+    const sellerPhone = currentSeller? (currentSeller.whatsapp || currentSeller.phone || '').replace(/[^0-9]/g,'') : '';
+    if(sellerPhone){
+      const itemsText = cart.map(it=>`• ${it.n} x${it.q} = ₹${it.p*it.q}`).join('%0A');
+      const msg = `नया ऑर्डर – Balcony Shop%0Aनाम: ${name}%0Aफोन: ${phone}%0Aपता: ${gali}, ${landmark}%0Aभुगतान: ${pay.toUpperCase()}%0A%0A${itemsText}%0A%0Aकुल: ₹${total}`;
+      const waUrl = `https://wa.me/${sellerPhone}?text=${msg}`;
+      const waBtn = document.createElement('a');
+      waBtn.href = waUrl; waBtn.target='_blank';
+      waBtn.textContent='📲 WhatsApp पर भेजें';
+      waBtn.style='display:inline-block;margin-top:8px;background:#25D366;color:#fff;padding:8px 12px;border-radius:10px;font-weight:700;text-decoration:none;font-size:13px';
+      const msgEl=$('order-msg'); msgEl.appendChild(document.createElement('br')); msgEl.appendChild(waBtn);
+    }
+  }catch(e){}
+  cart=[]; updateCart();
+
+};
+
+$('btn-locate').onclick = ()=>{
+  const b=$('btn-locate');
+  if(!navigator.geolocation){ alert('लोकेशन सपोर्ट नहीं'); return; }
+  b.textContent='⏳...'; b.disabled=true;
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude.toFixed(6), lng=pos.coords.longitude.toFixed(6);
+    $('cx-landmark').value = '📍 '+lat+', '+lng;
+    b.textContent='✅'; setTimeout(()=>{b.textContent='📍 लोकेशन'; b.disabled=false},1200);
+  }, err=>{ alert('लोकेशन नहीं मिली: '+err.message); b.textContent='📍 लोकेशन'; b.disabled=false; }, {enableHighAccuracy:true, timeout:10000});
+};
+
+function applyCatFilter(){
+  document.querySelectorAll('.cat-chip').forEach(btn=>{
+    btn.onclick = ()=>{
+      document.querySelectorAll('.cat-chip').forEach(b=>{b.style.background='#f4f1e9';b.style.color='#19160f'});
+      btn.style.background='#0b7a1b';btn.style.color='#fff';
+      const cat = btn.dataset.cat;
+      document.querySelectorAll('#seller-list.shop').forEach((el,i)=>{
+        const s = SELLERS[i];
+        el.style.display = (cat==='all' || (s.cat||'').includes(cat))? '' : 'none';
+      });
+    };
+  });
+}
+setTimeout(applyCatFilter, 300);
+
+function bindAuth(){
+  const send=$('btn-send-otp'), verify=$('btn-verify-otp'), back=$('btn-back-phone'), guest=$('btn-guest');
+  if(send) send.onclick=()=>{
+    const p=$('auth-phone').value.trim();
+    if(p.length<10){ alert('सही नंबर डालें'); return; }
+    $('auth-phone-label').textContent='+91 '+p;
+    $('auth-step-phone').classList.add('hidden');
+    $('auth-step-otp').classList.remove('hidden');
+    $('auth-otp').focus();
+  };
+  if(verify) verify.onclick=()=>{
+    const otp=$('auth-otp').value.trim();
+    const phone=$('auth-phone').value.trim()||'9000000000';
+    if(otp==='1234' || phone==='9000000000') showApp(phone); else alert('गलत OTP • डेमो: 1234');
+  };
+  if(back) back.onclick=()=>{ $('auth-step-otp').classList.add('hidden'); $('auth-step-phone').classList.remove('hidden'); };
+  if(guest) guest.onclick=()=>showApp(null);
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', bindAuth); else bindAuth();
+setTimeout(bindAuth, 500); setTimeout(bindAuth, 1500);
+setTimeout(()=>{ const g=$('btn-guest'); if(g &&!$('view-app').classList.contains('hidden')===false){ g.style.outline='3px solid #0b7a1b'; g.textContent='👉 बिना लॉगिन जारी रखें – Tap'; } }, 3000);
+
+$('btn-back-sellers').onclick=()=>{ $('product-area').classList.add('hidden'); };
+
+async function loadSellersFromSB(){
+  try{
+    const local = JSON.parse(localStorage.getItem('balcony_sellers')||'[]');
+    if(local.length){ SELLERS = local.map((s,i)=>({id:s.id||('s'+i), name:s.shopName||s.name||'Shop', cat:s.category||'किराना', upi:s.upi||'balcony@upi'})); renderSellers(); }
+    if(supabaseReady && supabase){
+      const {data} = await supabase.from('sellers').select('id,phone,shop_name,upi,category').limit(20);
+      if(data && data.length){ SELLERS = data.map((r,i)=>({id:r.id||r.phone||('s'+i), name:r.shop_name||'Shop', cat:r.category||'किराना', upi:r.upi||'balcony@upi'})); renderSellers(); }
+    }
+  }catch(e){}
+}
+loadSellersFromSB();
+</script>
+
+</div></body></html>
