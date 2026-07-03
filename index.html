@@ -747,7 +747,7 @@ function openSeller(id){
 function addToCart(p){
 
     console.log('Product:', p); //  Ye check karega price kya aa raha hai
-
+alert(JSON.stringify(p));
     const f=cart.find(x=>x.id===p.id); 
 
     if(f) f.q++; 
