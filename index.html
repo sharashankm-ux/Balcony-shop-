@@ -758,8 +758,8 @@ function addToCart(p){
 
         q:1, 
 
-        price: Number(p.price ?? p.p ?? p.rate ?? 0),
-        p:Number(p.price ?? p.p ?? p.rate ?? 0), //  Ab 3 naam check karega
+        price: Number(p.p),
+p: Number(p.p),
 
         name:p.n || p.name,
         n:p.n || p.name //  Naam bhi dono se lega
@@ -774,15 +774,16 @@ function addToCart(p){
 
 function updateCart(){
 
-  const n=cart.reduce((a,b)=>a+b.q,0), t=cart.reduce((a,b)=>a+b.q*Number(b.price || 0),0);
+  const n = cart.reduce((a,b)=>a+b.q,0),
+      t = cart.reduce((a,b)=>a + (b.q * b.p), 0);
 
   $('cart-count').textContent=n; 
 
-  $('cart-total').textContent=''+t;
+  $('cart-total').textContent='₹'+t;
 
   $('cart-bar').style.display = n>0 ? '' : 'none';
 
-  $('cx-total').textContent=''+t;
+  $('cx-total').textContent='₹'+t;
 
 }
 
@@ -830,7 +831,7 @@ $('btn-place-order').onclick=async ()=>{
 
   const pay = document.querySelector('input[name="pay"]:checked').value;
 
-  const total = cart.reduce((a,b)=>a+b.price*b.q,0); 
+ const total = cart.reduce((a,b)=>a + (b.p * b.q), 0);
 
   const order = {customer_name:name, customer_phone:phone, address:gali, landmark:landmark, payment_method:pay, total:total, items:cart, seller_id: currentSeller?currentSeller.id:null, created_at:new Date().toISOString()};
 
