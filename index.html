@@ -765,17 +765,18 @@ p: Number(p.p),
         n:p.n || p.name //  Naam bhi dono se lega
 
     }); 
-
-    updateCart();
-
+alert(JSON.stringify(cart));
+updateCart();
 }
 
 
 
 function updateCart(){
 
-  const n = cart.reduce((a,b)=>a+b.q,0),
-      t = cart.reduce((a,b)=>a + (b.q * b.p), 0);
+alert("updateCart called");
+
+const n = cart.reduce((a,b)=>a+b.q,0),
+t = cart.reduce((a,b)=>a+(b.q*b.p),0);
 
   $('cart-count').textContent=n; 
 
